@@ -403,12 +403,14 @@ function renderManualResults(){const q=(document.getElementById('manualSearch').
 function pickManual(id){const m=meals.find(x=>x.id===id);if(!m)return;setPickForDate(S.sheetDate,S.sheetSlot,m);closeManual();toast('✓ Set to '+m.name);render();}
 
 function photoTag(meal){
-  const ed=S.mealEdits[meal.id]||{};
-  const url=photos[meal.name];
-  const fb=`<div class="meal-photo-fb">${meal.icon}</div>`;
-  const img=url?`<img class="meal-photo" src="${url}" onerror="this.style.display='none';this.nextSibling.style.display='flex'" loading="lazy"/>${fb.replace('meal-photo-fb','meal-photo-fb" style="display:none'}`:`<div class="meal-photo-fb">${meal.icon}</div>`;
-  if(ed.url){return`<div class="meal-photo-wrap"><a href="${ed.url}" target="_blank" onclick="event.stopPropagation()">${img}<div class="play-overlay"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></a></div>`;}
-  return`<div class="meal-photo-wrap">${img}</div>`;
+  var ed=S.mealEdits[meal.id]||{};
+  var url=photos[meal.name];
+  var icon=meal.icon;
+  var inner;
+  if(url){inner='<img class="meal-photo" src="'+url+'" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\'" loading="lazy"/><div class="meal-photo-fb" style="display:none">'+icon+'</div>';}
+  else{inner='<div class="meal-photo-fb">'+icon+'</div>';}
+  if(ed.url){return '<div class="meal-photo-wrap"><a href="'+ed.url+'" target="_blank" onclick="event.stopPropagation()">'+inner+'<div class="play-overlay"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></a></div>';}
+  return '<div class="meal-photo-wrap">'+inner+'</div>';
 }
 function getNT(m){return gN(m.name,m.ingredients||'').map(t=>`<span class="nt ${nutCls[t]}">${nutLbls[t]}</span>`).join('');}
 
