@@ -5,109 +5,139 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Khana">
+<meta name="apple-mobile-web-app-title" content="Meal Planner">
 <meta name="theme-color" content="#0F766E">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
-<title>Khana Kya Hai?</title>
+<title>Meal Planner</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
-:root{
-  --primary:#0D9488;--pl:#CCFBF1;--pd:#0F766E;
-  --text:#1a1a1a;--muted:#666;--border:#e5e7eb;--bg:#f8fafa;--card:#fff;
-  --sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
-  --sal:env(safe-area-inset-left,0px);--sar:env(safe-area-inset-right,0px);
-}
+:root{--p:#0D9488;--pl:#CCFBF1;--pd:#0F766E;--text:#1a1a1a;--muted:#666;--border:#e5e7eb;--bg:#f4f7f7;--card:#fff;--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px)}
 html,body{height:100%;overscroll-behavior:none}
 body{background:var(--bg);color:var(--text);max-width:430px;margin:0 auto;display:flex;flex-direction:column;min-height:100vh}
-
-/* Header */
-.hdr{background:var(--pd);padding:calc(14px + var(--sat)) 16px 12px;color:#fff;position:sticky;top:0;z-index:100}
+.hdr{background:var(--pd);padding:calc(12px + var(--sat)) 16px 10px;color:#fff;position:sticky;top:0;z-index:100}
 .hdr-row{display:flex;justify-content:space-between;align-items:center}
-.logo{display:flex;align-items:center;gap:10px}
-.logo-mark{width:36px;height:36px;background:rgba(255,255,255,0.18);border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.logo-text .logo-main{font-size:16px;font-weight:700;letter-spacing:-0.3px;display:block}
-.logo-text .logo-sub{font-size:10px;opacity:0.65;letter-spacing:0.3px;display:block;margin-top:1px}
-.gear-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.15);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-appearance:none}
-.time-chip{background:rgba(255,255,255,0.15);border-radius:10px;padding:3px 10px;font-size:11px;margin-top:8px;display:inline-block}
-
-/* Tabs */
+.hdr-title{font-size:18px;font-weight:700;letter-spacing:-.3px}
+.hdr-sub{font-size:10px;opacity:.6;margin-top:1px}
+.gear-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.15);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.time-chip{background:rgba(255,255,255,.15);border-radius:10px;padding:3px 10px;font-size:11px;margin-top:7px;display:inline-block}
 .tabs{display:flex;background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:99}
-.tab{flex:1;padding:12px 4px;text-align:center;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:color .15s}
-.tab.active{color:var(--primary);border-bottom-color:var(--primary)}
-
-/* Scrollable content */
-.content{flex:1;padding:12px 12px calc(24px + var(--sab));overflow-y:auto;-webkit-overflow-scrolling:touch}
+.tab{flex:1;padding:12px 4px;text-align:center;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent}
+.tab.active{color:var(--p);border-bottom-color:var(--p)}
+.content{flex:1;padding:12px 12px calc(20px + var(--sab));overflow-y:auto;-webkit-overflow-scrolling:touch}
 .sec-lbl{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin:16px 0 8px}
 .sec-lbl:first-child{margin-top:2px}
-
-/* Meal cards */
-.meal-card{background:var(--card);border-radius:14px;border:1px solid var(--border);margin-bottom:10px;overflow:hidden;cursor:pointer;transition:box-shadow .15s}
-.meal-card.current{border:1.5px solid var(--primary)}
-.meal-card:active{opacity:.95}
+.meal-card{background:var(--card);border-radius:14px;border:1px solid var(--border);margin-bottom:10px;overflow:hidden;cursor:pointer;user-select:none}
+.meal-card.current{border:1.5px solid var(--p)}
 .meal-hdr{display:flex;align-items:center;padding:10px 12px;gap:10px}
 .meal-photo{width:54px;height:54px;border-radius:10px;object-fit:cover;flex-shrink:0;background:#f0f0f0}
-.meal-photo-fb{width:54px;height:54px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:26px}
+.meal-photo-fb{width:54px;height:54px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:26px;background:#f5f5f5}
+.meal-photo-wrap{position:relative;flex-shrink:0;width:54px;height:54px}
+.meal-photo-wrap a{display:block;width:54px;height:54px;border-radius:10px;overflow:hidden;position:relative}
+.play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.28);border-radius:10px}
 .meal-info{flex:1;min-width:0}
 .meal-cui{font-size:10px;font-weight:600;margin-bottom:1px}
 .meal-name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nut-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+.nut-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
 .nt{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500}
 .nt-protein{background:#FEE2E2;color:#991B1B}.nt-carb{background:#FEF3C7;color:#92400E}
 .nt-vitamin{background:#D1FAE5;color:#065F46}.nt-fiber{background:#EDE9FE;color:#5B21B6}
-.nt-calcium{background:#DBEAFE;color:#1E40AF}.nt-iron{background:#FEE2E2;color:#7F1D1D}
-.nt-lowcal{background:#F0FDF4;color:#166534}
+.nt-calcium{background:#DBEAFE;color:#1E40AF}.nt-lowcal{background:#F0FDF4;color:#166534}
 .icon-acts{display:flex;align-items:center;gap:6px;flex-shrink:0}
-.icon-btn{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s}
+.icon-btn{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer}
 .icon-btn:active{background:var(--pl)}
 .icon-btn.star-on{background:#FEF3C7;border-color:#F59E0B}
 .meal-body{border-top:1px solid var(--border);padding:12px 14px;display:none}
 .meal-body.open{display:block}
 .recipe-text{font-size:13px;color:#444;line-height:1.6;margin-bottom:8px}
-.ingr-text{font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.5}
+.ingr-text{font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5}
 .act-row{display:flex;gap:8px;flex-wrap:wrap}
-.btn{border:none;border-radius:10px;padding:9px 14px;font-size:13px;font-weight:600;cursor:pointer;-webkit-appearance:none}
+.btn{border:none;border-radius:10px;padding:9px 14px;font-size:13px;font-weight:600;cursor:pointer}
 .btn:active{opacity:.85}
-.btn-p{background:var(--primary);color:#fff}
-.btn-o{background:#fff;color:var(--primary);border:1px solid var(--primary)}
-
-/* Look-ahead */
-.la-bar{background:var(--pl);border-radius:14px;padding:12px 14px;margin-bottom:12px;border:1px solid rgba(13,148,136,.2)}
-.la-title{font-size:11px;font-weight:700;color:var(--pd);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.btn-p{background:var(--p);color:#fff}
+.btn-o{background:#fff;color:var(--p);border:1px solid var(--p)}
+.badge-fav{background:#FEF3C7;color:#92400E;font-size:10px;padding:1px 6px;border-radius:8px;margin-left:4px}
+.badge-egg{background:#FEF9C3;color:#854D0E;font-size:10px;padding:1px 6px;border-radius:8px;margin-left:4px}
+.la-bar{background:var(--pl);border-radius:14px;padding:12px 14px;margin-bottom:12px;border:1px solid rgba(13,148,136,.2);cursor:pointer}
+.la-bar:active{opacity:.9}
+.la-title{font-size:11px;font-weight:700;color:var(--pd);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
 .la-items{display:flex;gap:8px}
 .la-item{flex:1;background:#fff;border-radius:10px;padding:8px 10px;border:1px solid rgba(13,148,136,.15);min-width:0}
 .la-when{font-size:10px;color:var(--muted)}
 .la-name{font-size:12px;font-weight:600;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.la-cui{font-size:10px;color:var(--primary)}
-
-.badge-fav{background:#FEF3C7;color:#92400E;font-size:10px;padding:1px 6px;border-radius:8px;margin-left:4px}
-.badge-egg{background:#FEF9C3;color:#854D0E;font-size:10px;padding:1px 6px;border-radius:8px;margin-left:4px}
-
-/* Completed */
-.comp-item{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
-.comp-tick{width:28px;height:28px;border-radius:50%;background:#D1FAE5;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-.manual-btn{background:var(--pl);border:1px dashed var(--primary);border-radius:12px;padding:16px;text-align:center;cursor:pointer;color:var(--pd);font-size:13px;font-weight:500;margin-top:8px}
-
-/* My Menu */
+.la-cui{font-size:10px;color:var(--p)}
+.day-nav{display:flex;align-items:center;justify-content:space-between;background:var(--card);border-radius:14px;padding:10px 14px;margin-bottom:12px;border:1px solid var(--border)}
+.day-nav-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;color:var(--p);font-weight:300}
+.day-nav-btn:active{background:var(--pl)}
+.day-date{text-align:center}
+.day-date-main{font-size:15px;font-weight:700}
+.day-date-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.day-back{font-size:13px;color:var(--p);cursor:pointer;padding:4px 0;margin-bottom:8px;display:inline-flex;align-items:center;gap:4px}
+.week-toggle{display:flex;background:var(--card);border-radius:12px;border:1px solid var(--border);padding:3px;margin-bottom:12px;gap:2px}
+.week-opt{flex:1;padding:8px;text-align:center;font-size:13px;font-weight:500;color:var(--muted);border-radius:9px;cursor:pointer}
+.week-opt.active{background:var(--p);color:#fff}
+.week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:12px}
+.week-day{background:var(--card);border-radius:10px;border:1px solid var(--border);padding:6px 3px;text-align:center;cursor:pointer;min-height:56px}
+.week-day:active{background:var(--pl)}
+.week-day.today{border:1.5px solid var(--p)}
+.week-day.selected{background:var(--pl);border-color:var(--p)}
+.wd-name{font-size:9px;color:var(--muted);font-weight:600;text-transform:uppercase}
+.wd-date{font-size:14px;font-weight:700;margin:3px 0 2px}
+.wd-dot{width:5px;height:5px;border-radius:50%;background:var(--p);margin:0 auto;opacity:0}
+.week-day.has-plan .wd-dot{opacity:1}
+.week-expanded{background:var(--card);border-radius:14px;border:1px solid var(--border);overflow:hidden;margin-bottom:10px}
+.we-hdr{background:#E6F7F5;padding:10px 14px;font-size:14px;font-weight:700;color:#0F5C54;display:flex;align-items:center;justify-content:space-between}
+.we-slot{display:flex;align-items:center;padding:10px 14px;gap:10px;border-top:1px solid var(--border);cursor:pointer}
+.we-slot:active{background:#f8fffe}
+.we-slot-icon{font-size:16px;width:22px;text-align:center;flex-shrink:0}
+.we-slot-info{flex:1;min-width:0}
+.we-slot-label{font-size:10px;color:var(--muted);font-weight:500}
+.we-slot-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.we-swap{width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--p);flex-shrink:0}
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;opacity:0;pointer-events:none;transition:opacity .25s}
+.sheet-bg.open{opacity:1;pointer-events:all}
+.sheet{position:fixed;bottom:0;left:50%;width:100%;max-width:430px;background:#fff;border-radius:20px 20px 0 0;z-index:201;padding-bottom:calc(16px + var(--sab));transform:translateX(-50%) translateY(100%);transition:transform .3s cubic-bezier(.32,0,.67,0)}
+.sheet.open{transform:translateX(-50%) translateY(0)}
+.sheet-handle{width:36px;height:4px;background:#ddd;border-radius:2px;margin:12px auto 0}
+.sheet-title{font-size:16px;font-weight:700;padding:14px 20px 6px}
+.sheet-meal-name{font-size:13px;color:var(--muted);padding:0 20px 12px;border-bottom:1px solid var(--border)}
+.sheet-action{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--border);cursor:pointer}
+.sheet-action:last-child{border-bottom:none}
+.sheet-action:active{background:#f8fffe}
+.sa-icon{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.sa-text{font-size:14px;font-weight:500}
+.sa-sub{font-size:12px;color:var(--muted);margin-top:1px}
+.edit-sheet{position:fixed;bottom:0;left:50%;width:100%;max-width:430px;background:#fff;border-radius:20px 20px 0 0;z-index:202;padding-bottom:calc(16px + var(--sab));max-height:90vh;overflow-y:auto;transform:translateX(-50%) translateY(100%);transition:transform .3s cubic-bezier(.32,0,.67,0)}
+.edit-sheet.open{transform:translateX(-50%) translateY(0)}
+.edit-field{padding:0 20px 14px}
+.edit-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:block}
+.edit-input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:16px;background:#fafafa;color:var(--text)}
+.edit-input:focus{outline:none;border-color:var(--p)}
+.edit-textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:15px;background:#fafafa;color:var(--text);min-height:80px;resize:none}
+.edit-textarea:focus{outline:none;border-color:var(--p)}
+.slot-checks{display:flex;gap:8px;flex-wrap:wrap}
+.slot-check{display:flex;align-items:center;gap:5px;padding:7px 12px;border:1px solid var(--border);border-radius:20px;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted)}
+.slot-check.checked{background:var(--pl);border-color:var(--p);color:var(--pd)}
+.freq-opts{display:flex;gap:6px;flex-wrap:wrap}
+.freq-opt{padding:7px 12px;border:1px solid var(--border);border-radius:20px;cursor:pointer;font-size:12px;font-weight:500;color:var(--muted)}
+.freq-opt.sel{background:var(--p);border-color:var(--p);color:#fff}
+.edit-save{width:calc(100% - 40px);margin:4px 20px 0;padding:14px;background:var(--p);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;display:block}
+.manual-input-wrap{padding:14px 20px}
+.manual-search{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:12px;font-size:16px;background:#fafafa;color:var(--text)}
+.manual-search:focus{outline:none;border-color:var(--p)}
+.manual-results{margin-top:10px;max-height:280px;overflow-y:auto}
+.manual-result{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.manual-result:last-child{border-bottom:none}
+.manual-result:active{opacity:.7}
+.mr-icon{font-size:20px;width:30px;text-align:center}
+.mr-name{font-size:14px;font-weight:600}
+.mr-sub{font-size:11px;color:var(--muted);margin-top:1px}
 .db-topbar{display:flex;gap:8px;margin-bottom:10px}
-.db-search{flex:1;padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-size:16px;background:var(--card);color:var(--text);-webkit-appearance:none}
-.db-search:focus{outline:none;border-color:var(--primary)}
-.btn-add{background:var(--primary);color:#fff;border:none;border-radius:10px;padding:0 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;-webkit-appearance:none}
-
-/* Add form */
-.add-card{background:var(--card);border:1.5px dashed var(--primary);border-radius:14px;padding:14px 16px;margin-bottom:14px}
-.add-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;display:block}
-.add-input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:16px;background:var(--bg);color:var(--text);margin-bottom:10px;-webkit-appearance:none}
-.add-input:focus{outline:none;border-color:var(--primary)}
-.add-row{display:flex;gap:8px;margin-bottom:10px}
-.add-sel{flex:1;padding:10px 8px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--bg);color:var(--text);-webkit-appearance:none}
-.add-row-btns{display:flex;gap:8px}
-.btn-save{background:var(--primary);color:#fff;border:none;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:600;cursor:pointer;flex:1}
-.btn-cancel{background:#fff;color:var(--muted);border:1px solid var(--border);border-radius:10px;padding:11px 16px;font-size:14px;cursor:pointer}
-
-/* Slot groups */
+.db-search{flex:1;padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-size:16px;background:var(--card);color:var(--text)}
+.db-search:focus{outline:none;border-color:var(--p)}
+.btn-add-sm{background:var(--p);color:#fff;border:none;border-radius:10px;padding:0 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
 .slot-grp{margin-bottom:10px;border-radius:14px;overflow:hidden;border:1px solid var(--border)}
-.slot-hdr{display:flex;align-items:center;padding:12px 14px;cursor:pointer;gap:10px;background:#E6F7F5;user-select:none}
+.slot-hdr{display:flex;align-items:center;padding:11px 14px;cursor:pointer;gap:10px;background:#E6F7F5;user-select:none}
 .slot-hdr:active{background:#d4f1ed}
 .slot-emoji{font-size:16px;flex-shrink:0}
 .slot-title{flex:1;font-size:14px;font-weight:600;color:#0F5C54}
@@ -116,85 +146,64 @@ body{background:var(--bg);color:var(--text);max-width:430px;margin:0 auto;displa
 .slot-chev.open{transform:rotate(90deg)}
 .slot-items{display:none;background:var(--card)}
 .slot-items.open{display:block}
-.db-row{display:flex;align-items:center;padding:11px 14px;gap:10px;border-bottom:1px solid var(--border)}
+.db-row{display:flex;align-items:center;padding:10px 14px;gap:10px;border-bottom:1px solid var(--border)}
 .db-row:last-child{border-bottom:none}
 .db-photo{width:42px;height:42px;border-radius:8px;object-fit:cover;flex-shrink:0;background:#f0f0f0}
 .db-photo-fb{width:42px;height:42px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;background:#f5f5f5}
 .db-info{flex:1;min-width:0}
 .db-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .db-sub{font-size:11px;color:var(--muted);margin-top:1px}
-.db-acts{display:flex;align-items:center;gap:5px;flex-shrink:0}
-.like-btn{width:30px;height:30px;border-radius:50%;border:1px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer}
-.like-btn:active{opacity:.7}
+.db-acts{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.like-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer}
 .like-btn.liked{background:#D1FAE5;border-color:#6EE7B7}
 .like-btn.disliked{background:#FEE2E2;border-color:#FCA5A5}
-.rm-btn{width:30px;height:30px;border-radius:50%;border:1px solid #fca5a5;background:#fff0f0;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;color:#dc2626;line-height:1}
-
-/* Settings */
-.about-card{background:var(--pd);border-radius:16px;padding:24px 20px;text-align:center;color:#fff;margin-bottom:16px}
-.about-logo-wrap{width:60px;height:60px;background:rgba(255,255,255,.15);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+.rm-btn{width:28px;height:28px;border-radius:50%;border:1px solid #fca5a5;background:#fff0f0;display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;color:#dc2626}
+.add-card{background:var(--card);border:1.5px dashed var(--p);border-radius:14px;padding:14px 16px;margin-bottom:14px}
+.add-input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:16px;background:var(--bg);color:var(--text);margin-bottom:10px}
+.add-input:focus{outline:none;border-color:var(--p)}
+.add-row{display:flex;gap:8px;margin-bottom:10px}
+.add-sel{flex:1;padding:10px 8px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--bg);color:var(--text)}
+.add-row-btns{display:flex;gap:8px}
+.btn-save{background:var(--p);color:#fff;border:none;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:600;cursor:pointer;flex:1}
+.btn-cancel{background:#fff;color:var(--muted);border:1px solid var(--border);border-radius:10px;padding:11px 16px;font-size:14px;cursor:pointer}
+.about-card{background:var(--pd);border-radius:16px;padding:22px 20px;text-align:center;color:#fff;margin-bottom:16px}
 .about-name{font-size:18px;font-weight:700}
-.about-tagline{font-size:12px;opacity:.7;margin-top:3px}
-.about-ver{display:inline-block;background:rgba(255,255,255,.18);border-radius:20px;padding:4px 14px;font-size:11px;margin-top:12px}
+.about-ver{display:inline-block;background:rgba(255,255,255,.18);border-radius:20px;padding:4px 14px;font-size:11px;margin-top:10px}
 .s-grp{background:var(--card);border-radius:14px;border:1px solid var(--border);overflow:hidden;margin-bottom:16px}
-.s-row{display:flex;align-items:center;padding:14px 16px;gap:12px;border-bottom:1px solid var(--border);cursor:pointer}
+.s-row{display:flex;align-items:center;padding:13px 16px;gap:12px;border-bottom:1px solid var(--border);cursor:pointer}
 .s-row:last-child{border-bottom:none}
 .s-row:active{background:#f4faf9}
-.s-row.notap{cursor:default}
-.s-row.notap:active{background:transparent}
-.s-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
-.s-lbl{flex:1}
-.s-title{font-size:14px;font-weight:500}
-.s-sub{font-size:12px;color:var(--muted);margin-top:2px}
-.s-right{font-size:13px;color:var(--muted);flex-shrink:0}
-.s-chev{font-size:15px;color:#ccc}
+.s-row.notap{cursor:default}.s-row.notap:active{background:transparent}
+.s-ico{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.s-lbl{flex:1}.s-title{font-size:14px;font-weight:500}.s-sub{font-size:12px;color:var(--muted);margin-top:1px}
+.s-right{font-size:13px;color:var(--muted);flex-shrink:0}.s-chev{font-size:15px;color:#ccc}
 .sw{width:44px;height:26px;border-radius:13px;background:#ddd;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
-.sw.on{background:var(--primary)}
+.sw.on{background:var(--p)}
 .sw::after{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
 .sw.on::after{left:21px}
 .s-inp{border:none;outline:none;font-size:14px;color:var(--text);text-align:right;background:transparent;width:140px}
 .s-inp::placeholder{color:#bbb}
-
-/* Toast — uses in-flow positioning to avoid fixed */
-.toast-anchor{position:relative;height:0}
-.toast-float{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);background:#134e4a;color:#fff;padding:10px 22px;border-radius:22px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;z-index:200}
-.toast-float.show{opacity:1}
-
-/* Install prompt banner */
-.install-bar{background:var(--pd);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px;font-size:13px}
-.install-bar button{background:rgba(255,255,255,.25);border:none;border-radius:8px;color:#fff;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;margin-left:auto;flex-shrink:0}
-.install-bar .close-x{background:none;border:none;color:rgba(255,255,255,.7);font-size:20px;padding:0 4px;cursor:pointer;margin-left:0}
-
+.toast-wrap{position:fixed;bottom:calc(24px + var(--sab));left:0;right:0;display:flex;justify-content:center;pointer-events:none;z-index:400}
+.toast{background:#134e4a;color:#fff;padding:10px 22px;border-radius:22px;font-size:13px;opacity:0;transition:opacity .3s;white-space:nowrap}
+.toast.show{opacity:1}
+.install-bar{background:var(--pd);color:#fff;padding:10px 16px;display:flex;align-items:center;gap:10px;font-size:12px}
+.install-bar button{background:rgba(255,255,255,.25);border:none;border-radius:8px;color:#fff;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;margin-left:auto;flex-shrink:0}
+.install-bar .ix{background:none;border:none;color:rgba(255,255,255,.7);font-size:20px;padding:0 2px;cursor:pointer;margin-left:0}
 @keyframes swapspin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
 .spinning svg{animation:swapspin .4s ease}
-
-/* iOS input zoom fix */
 input,select,textarea{font-size:16px}
 </style>
 </head>
 <body>
-
+<div class="toast-wrap"><div class="toast" id="toast"></div></div>
 <div id="installBar" class="install-bar" style="display:none">
   <span>📲 Add to Home Screen for the full app experience</span>
   <button onclick="showInstallHelp()">How?</button>
-  <button class="close-x" onclick="document.getElementById('installBar').style.display='none'">×</button>
+  <button class="ix" onclick="this.parentElement.style.display='none'">×</button>
 </div>
-
 <div class="hdr">
   <div class="hdr-row">
-    <div class="logo">
-      <div class="logo-mark">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-          <path d="M12 2C8 2 5 5 5 9c0 2.5 1.2 4.7 3 6.1V17h8v-1.9c1.8-1.4 3-3.6 3-6.1 0-4-3-7-7-7z" fill="white" opacity="0.95"/>
-          <path d="M9 17v1a3 3 0 006 0v-1H9z" fill="white" opacity="0.6"/>
-          <circle cx="12" cy="9" r="2" fill="#0D9488"/>
-        </svg>
-      </div>
-      <div class="logo-text">
-        <span class="logo-main">Khana Kya Hai?</span>
-        <span class="logo-sub">Meal planner</span>
-      </div>
-    </div>
+    <div><div class="hdr-title">Meal Planner</div><div class="hdr-sub">Khana Kya Hai?</div></div>
     <button class="gear-btn" onclick="switchTab('settings',null)">
       <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="3"/>
@@ -204,117 +213,61 @@ input,select,textarea{font-size:16px}
   </div>
   <div class="time-chip" id="timeChip"></div>
 </div>
-
 <div class="tabs" id="tabBar">
-  <div class="tab active" onclick="switchTab('upcoming',this)">Today</div>
-  <div class="tab" onclick="switchTab('completed',this)">Completed</div>
+  <div class="tab active" onclick="switchTab('today',this)">Today</div>
+  <div class="tab" onclick="switchTab('week',this)">Week</div>
   <div class="tab" onclick="switchTab('database',this)">My Menu</div>
 </div>
+<div class="content" id="contentArea"></div>
 
-<div class="content" id="contentArea">
-  <div class="toast-anchor"><div class="toast-float" id="toast"></div></div>
+<!-- Sheets -->
+<div class="sheet-bg" id="sheetBg" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title" id="sheetTitle">Options</div>
+  <div class="sheet-meal-name" id="sheetMealName"></div>
+  <div id="sheetActions"></div>
+</div>
+<div class="sheet-bg" id="editBg" onclick="closeEdit()"></div>
+<div class="edit-sheet" id="editSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Edit dish</div>
+  <div id="editBody"></div>
+</div>
+<div class="sheet-bg" id="manualBg" onclick="closeManual()"></div>
+<div class="sheet" id="manualSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Choose a dish</div>
+  <div class="manual-input-wrap">
+    <input class="manual-search" id="manualSearch" placeholder="Type a dish name..." oninput="renderManualResults()" autocomplete="off"/>
+    <div class="manual-results" id="manualResults"></div>
+  </div>
 </div>
 
 <script>
-// ── State (persisted to localStorage) ─────────────────────────────────────
-function loadState() {
-  try { return JSON.parse(localStorage.getItem('khana_state') || '{}'); } catch(e) { return {}; }
-}
-function saveState() {
-  try { localStorage.setItem('khana_state', JSON.stringify({
-    eggsOn: S.eggsOn, cookName: S.cookName, cookPhone: S.cookPhone,
-    starredItems: S.starredItems, likedItems: S.likedItems,
-    completedMeals: S.completedMeals, picks: S.picks,
-    customMeals: meals.filter(m => m.isCustom),
-    removedIds: S.removedIds,
-  })); } catch(e) {}
-}
-
-const saved = loadState();
-
-const S = {
-  eggsOn: saved.eggsOn || false,
-  cookName: saved.cookName || '',
-  cookPhone: saved.cookPhone || '',
-  currentTab: 'upcoming',
-  expandedCards: {},
-  expandedSlots: { breakfast:true, lunch:true, snacks:true, dinner:true },
-  starredItems: saved.starredItems || {},
-  likedItems: saved.likedItems || {},
-  showAddForm: false,
-  picks: saved.picks || {},
-  removedIds: saved.removedIds || [],
-  completedMeals: saved.completedMeals || [
-    { name:'Poha', when:'Today, Breakfast', icon:'🌾' },
-    { name:'Dal Dhokli', when:'Today, Lunch', icon:'🫕' },
-  ],
-};
-
-// ── Food photos (Unsplash) ────────────────────────────────────────────────
-const photos = {
-  'Poha':'https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=120&q=70',
-  'Methi Thepla':'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=120&q=70',
-  'Masala Dosa':'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=120&q=70',
-  'Idli Sambar':'https://images.unsplash.com/photo-1589301761896-53adc6b30062?w=120&q=70',
-  'Upma':'https://images.unsplash.com/photo-1626200419199-391ae4be7a41?w=120&q=70',
-  'Aloo Paratha':'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=120&q=70',
-  'Yogurt Parfait':'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=120&q=70',
-  'PB Smoothie':'https://images.unsplash.com/photo-1553530979-fbb9e4aee36f?w=120&q=70',
-  'Egg Bhurji Toast':'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=120&q=70',
-  'Masala Omelette':'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=120&q=70',
-  'Protein Pancakes':'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=120&q=70',
-  'Besan Cheela':'https://images.unsplash.com/photo-1567337710282-00832b415979?w=120&q=70',
-  'Stuffed Moong Chilla':'https://images.unsplash.com/photo-1567337710282-00832b415979?w=120&q=70',
-  'Dal Dhokli':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70',
-  'Rajma Chawal':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70',
-  'Veg Biryani':'https://images.unsplash.com/photo-1563379091339-03246963d95a?w=120&q=70',
-  'Chole Bhature':'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=120&q=70',
-  'Pav Bhaji':'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=120&q=70',
-  'Paneer Frankie':'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=120&q=70',
-  'Spinach-Corn Pasta':'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=120&q=70',
-  'Pizza Paratha':'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=120&q=70',
-  'Paneer Paratha':'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=120&q=70',
-  'Mini Veg Burgers':'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=120&q=70',
-  'Veg Sandwich':'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=120&q=70',
-  'Masala Dosa (Mini)':'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=120&q=70',
-  'Samosa & Chai':'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=120&q=70',
-  'Dhokla':'https://images.unsplash.com/photo-1567337710282-00832b415979?w=120&q=70',
-  'Manchurian':'https://images.unsplash.com/photo-1563379091339-03246963d95a?w=120&q=70',
-  'Manchurian Balls + Lemon Rice':'https://images.unsplash.com/photo-1563379091339-03246963d95a?w=120&q=70',
-  'Moong Sprout Chaat':'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=120&q=70',
-  'Chana Chaat':'https://images.unsplash.com/photo-1567337710282-00832b415979?w=120&q=70',
-  'Greek Yogurt with Nuts & Honey':'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=120&q=70',
-  'Fruit & Nut Yogurt Bowl':'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=120&q=70',
-  'Hummus & Veggie Wrap':'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=120&q=70',
-  'Dal Makhani':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70',
-  'Palak Paneer':'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=120&q=70',
-  'Paneer Vegetable Kofta Curry':'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=120&q=70',
-  'Aloo Gobi':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70',
-  'Aloo Matar':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70',
-  'Cauliflower Masala':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70',
-  'Mixed Vegetable Sabzi':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70',
-  'Tacos de Verdura':'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=120&q=70',
-  'Kadhi Chawal':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70',
-};
-
-// ── Helpers ───────────────────────────────────────────────────────────────
-function guessCuisine(name,ingr){const n=(name+' '+ingr).toLowerCase();if(/dosa|idli|sambar|upma/.test(n))return'South Indian';if(/pav bhaji|bhel/.test(n))return'Maharashtrian';if(/dal dhokli|dhokla|thepla|kadhi/.test(n))return'Gujarati';if(/pasta|pizza/.test(n))return'Italian';if(/manchurian|lemon rice/.test(n))return'Indo-chinese';if(/taco|burrito/.test(n))return'Mexican';return'North Indian';}
-function guessIcon(name){const n=name.toLowerCase();if(/smoothie|shake/.test(n))return'🥤';if(/omelette|egg|bhurji/.test(n))return'🍳';if(/pancake|cheela|chilla|dosa/.test(n))return'🥞';if(/paratha|roti|bread|sandwich|wrap|frankie|burger/.test(n))return'🫓';if(/pasta/.test(n))return'🍝';if(/rice|biryani/.test(n))return'🍚';if(/chaat|sprout|salad/.test(n))return'🥗';if(/yogurt|parfait/.test(n))return'🍦';if(/dal|curry|sabzi|matar|gobi|masala|kofta|palak/.test(n))return'🫕';if(/samosa/.test(n))return'🔺';if(/paneer/.test(n))return'🧀';if(/corn/.test(n))return'🌽';if(/hummus/.test(n))return'🫙';return'🥘';}
-function hasEggFn(name,ingr){return/egg|omelette|bhurji|pancake/i.test(name+' '+ingr);}
-function guessNut(name,ingr){const t=(name+' '+ingr).toLowerCase();const tags=[];if(/paneer|egg|protein|moong|chana|sprout|dal|yogurt|greek|nut|peanut|edamame/.test(t))tags.push('protein');if(/rice|pasta|bread|roti|paratha|oat|wheat|dosa|idli|potato|aloo|bhaji/.test(t))tags.push('carb');if(/spinach|palak|carrot|vegetable|veggie|tomato|bell pepper|cucumber|fruit|berry/.test(t))tags.push('vitamin');if(/sprout|moong|chana|bean|lentil|dal|oat|flax|chia/.test(t))tags.push('fiber');if(/yogurt|paneer|cheese|milk/.test(t))tags.push('calcium');if(/spinach|palak|moong|chana|bean/.test(t))tags.push('iron');if(/chaat|salad|stir.?fry|smoothie/.test(t))tags.push('lowcal');return[...new Set(tags)].slice(0,3);}
-
-// ── Meals DB ──────────────────────────────────────────────────────────────
-let nextId = 200;
-let meals = [];
-
-const builtInMeals = [
+function loadSaved(){try{return JSON.parse(localStorage.getItem('mp2_state')||'{}')}catch{return{}}}
+function saveState(){try{localStorage.setItem('mp2_state',JSON.stringify({eggsOn:S.eggsOn,cookName:S.cookName,cookPhone:S.cookPhone,starredItems:S.starredItems,likedItems:S.likedItems,picks:S.picks,weekPlan:S.weekPlan,customMeals:meals.filter(m=>m.isCustom),removedIds:S.removedIds,mealEdits:S.mealEdits}))}catch{}}
+const saved=loadSaved();
+const S={eggsOn:saved.eggsOn||false,cookName:saved.cookName||'',cookPhone:saved.cookPhone||'',currentTab:'today',dayView:false,dayOffset:0,weekOffset:0,selectedDay:null,expandedCards:{},expandedSlots:{breakfast:true,lunch:true,snacks:true,dinner:true},starredItems:saved.starredItems||{},likedItems:saved.likedItems||{},showAddForm:false,picks:saved.picks||{},weekPlan:saved.weekPlan||{},removedIds:saved.removedIds||[],mealEdits:saved.mealEdits||{},sheetSlot:null,sheetDate:null,editMealId:null};
+const photos={'Poha':'https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=120&q=70','Methi Thepla':'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=120&q=70','Masala Dosa':'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=120&q=70','Idli Sambar':'https://images.unsplash.com/photo-1589301761896-53adc6b30062?w=120&q=70','Upma':'https://images.unsplash.com/photo-1626200419199-391ae4be7a41?w=120&q=70','Aloo Paratha':'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=120&q=70','Yogurt Parfait':'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=120&q=70','PB Smoothie':'https://images.unsplash.com/photo-1553530979-fbb9e4aee36f?w=120&q=70','Egg Bhurji Toast':'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=120&q=70','Masala Omelette':'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=120&q=70','Protein Pancakes':'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=120&q=70','Besan Cheela':'https://images.unsplash.com/photo-1567337710282-00832b415979?w=120&q=70','Dal Dhokli':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Rajma Chawal':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Veg Biryani':'https://images.unsplash.com/photo-1563379091339-03246963d95a?w=120&q=70','Chole Bhature':'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=120&q=70','Pav Bhaji':'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=120&q=70','Paneer Frankie':'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=120&q=70','Spinach-Corn Pasta':'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=120&q=70','Samosa & Chai':'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=120&q=70','Dhokla':'https://images.unsplash.com/photo-1567337710282-00832b415979?w=120&q=70','Manchurian':'https://images.unsplash.com/photo-1563379091339-03246963d95a?w=120&q=70','Moong Sprout Chaat':'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=120&q=70','Greek Yogurt with Nuts & Honey':'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=120&q=70','Fruit & Nut Yogurt Bowl':'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=120&q=70','Hummus & Veggie Wrap':'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=120&q=70','Dal Makhani':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Palak Paneer':'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=120&q=70','Paneer Vegetable Kofta Curry':'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=120&q=70','Aloo Gobi':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Aloo Matar':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Cauliflower Masala':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Mixed Vegetable Sabzi':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Tacos de Verdura':'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=120&q=70','Kadhi Chawal':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Mini Veg Burgers':'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=120&q=70','Veg Sandwich':'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=120&q=70','Paneer Paratha':'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=120&q=70','Chana Chaat':'https://images.unsplash.com/photo-1567337710282-00832b415979?w=120&q=70'};
+function gC(n,i){const t=(n+' '+i).toLowerCase();if(/dosa|idli|sambar|upma/.test(t))return'South Indian';if(/pav bhaji|bhel/.test(t))return'Maharashtrian';if(/dal dhokli|dhokla|thepla|kadhi/.test(t))return'Gujarati';if(/pasta|pizza/.test(t))return'Italian';if(/manchurian|lemon rice/.test(t))return'Indo-chinese';if(/taco/.test(t))return'Mexican';return'North Indian';}
+function gI(n){const t=n.toLowerCase();if(/smoothie/.test(t))return'🥤';if(/omelette|egg|bhurji/.test(t))return'🍳';if(/pancake|cheela|chilla|dosa/.test(t))return'🥞';if(/paratha|roti|bread|sandwich|wrap|frankie|burger/.test(t))return'🫓';if(/pasta/.test(t))return'🍝';if(/rice|biryani/.test(t))return'🍚';if(/chaat|sprout|salad/.test(t))return'🥗';if(/yogurt|parfait/.test(t))return'🍦';if(/dal|curry|sabzi|matar|gobi|masala|kofta|palak/.test(t))return'🫕';if(/samosa/.test(t))return'🔺';if(/paneer/.test(t))return'🧀';if(/corn/.test(t))return'🌽';if(/hummus/.test(t))return'🫙';return'🥘';}
+function hE(n,i){return/egg|omelette|bhurji|pancake/i.test(n+' '+i);}
+function gN(n,i){const t=(n+' '+i).toLowerCase();const r=[];if(/paneer|egg|protein|moong|chana|sprout|dal|yogurt|greek|nut|peanut|edamame/.test(t))r.push('protein');if(/rice|pasta|bread|roti|paratha|oat|wheat|dosa|idli|potato|aloo|bhaji/.test(t))r.push('carb');if(/spinach|palak|carrot|vegetable|veggie|tomato|bell pepper|cucumber|fruit|berry/.test(t))r.push('vitamin');if(/sprout|moong|chana|bean|lentil|dal|oat|flax|chia/.test(t))r.push('fiber');if(/yogurt|paneer|cheese|milk/.test(t))r.push('calcium');if(/chaat|salad|smoothie/.test(t))r.push('lowcal');return[...new Set(r)].slice(0,3);}
+function getMon(d){const dt=new Date(d);const dy=dt.getDay();const df=dy===0?-6:1-dy;dt.setDate(dt.getDate()+df);dt.setHours(0,0,0,0);return dt;}
+function addD(d,n){const r=new Date(d);r.setDate(r.getDate()+n);return r;}
+function dKey(d){return d.toISOString().split('T')[0];}
+function fmtD(d,s){return d.toLocaleDateString('en-IN',s?{day:'numeric',month:'short'}:{weekday:'long',day:'numeric',month:'long'});}
+function getDOW(d){const dy=d.getDay();return dy===0?6:dy-1;}
+let nextId=200,meals=[];
+const BI=[
   {name:'Poha',cuisine:'Maharashtrian',type:'breakfast',icon:'🌾',recipe:'Flatten rice with mustard seeds, curry leaves, onions & peas. Top with coriander & lemon.',ingredients:'Flattened rice, onion, peas, mustard seeds, curry leaves, lemon',hasEgg:false,fav:true,timesCooked:12},
   {name:'Methi Thepla',cuisine:'Gujarati',type:'breakfast',icon:'🫓',recipe:'Whole wheat flatbread with fenugreek leaves, ajwain & mild spices. Serve with curd.',ingredients:'Whole wheat flour, fenugreek leaves, ajwain, curd, spices',hasEgg:false,fav:true,timesCooked:8},
   {name:'Masala Dosa',cuisine:'South Indian',type:'breakfast',icon:'🥞',recipe:'Crispy rice & lentil crepe with spiced potato filling. Serve with coconut chutney & sambar.',ingredients:'Rice, lentils, potato, coconut, spices',hasEgg:false,fav:false,timesCooked:6},
-  {name:'Upma',cuisine:'South Indian',type:'breakfast',icon:'🍚',recipe:'Semolina with vegetables & tempering. Quick nutritious morning meal.',ingredients:'Semolina, vegetables, mustard seeds, curry leaves',hasEgg:false,fav:false,timesCooked:5},
+  {name:'Upma',cuisine:'South Indian',type:'breakfast',icon:'🍚',recipe:'Semolina with vegetables & tempering.',ingredients:'Semolina, vegetables, mustard seeds, curry leaves',hasEgg:false,fav:false,timesCooked:5},
   {name:'Aloo Paratha',cuisine:'North Indian',type:'breakfast',icon:'🫓',recipe:'Whole wheat flatbread stuffed with spiced mashed potato. Serve with butter & curd.',ingredients:'Whole wheat flour, potato, spices, butter',hasEgg:false,fav:false,timesCooked:7},
-  {name:'Idli Sambar',cuisine:'South Indian',type:'breakfast',icon:'🫙',recipe:'Steamed rice cakes served with hot sambar & fresh coconut chutney.',ingredients:'Rice, lentils, sambar vegetables, coconut',hasEgg:false,fav:false,timesCooked:4},
-  {name:'PB Smoothie',cuisine:'North Indian',type:'breakfast',icon:'🥤',recipe:'Blend all ingredients until smooth.',ingredients:'Peanut butter, banana, oat milk, protein powder, chia/flax seeds',hasEgg:false,fav:false,timesCooked:0},
+  {name:'Idli Sambar',cuisine:'South Indian',type:'breakfast',icon:'🫙',recipe:'Steamed rice cakes with hot sambar & coconut chutney.',ingredients:'Rice, lentils, sambar vegetables, coconut',hasEgg:false,fav:false,timesCooked:4},
+  {name:'PB Smoothie',cuisine:'North Indian',type:'breakfast',icon:'🥤',recipe:'Blend all ingredients until smooth.',ingredients:'Peanut butter, banana, oat milk, protein powder, chia seeds',hasEgg:false,fav:false,timesCooked:0},
   {name:'Egg Bhurji Toast',cuisine:'North Indian',type:'breakfast',icon:'🍳',recipe:'Scramble eggs with sautéed onions & tomatoes; serve with toast.',ingredients:'Eggs, onion, tomato, toast',hasEgg:true,fav:false,timesCooked:0},
   {name:'Masala Omelette',cuisine:'North Indian',type:'breakfast',icon:'🍳',recipe:'Beat eggs with veggies; cook until set.',ingredients:'Eggs, onion, tomato, coriander, spinach',hasEgg:true,fav:false,timesCooked:0},
   {name:'Protein Pancakes',cuisine:'North Indian',type:'breakfast',icon:'🥞',recipe:'Blend all; cook on pan until golden on both sides.',ingredients:'Oats, eggs, milk',hasEgg:true,fav:false,timesCooked:0},
@@ -322,413 +275,350 @@ const builtInMeals = [
   {name:'Stuffed Moong Chilla',cuisine:'North Indian',type:'breakfast',icon:'🥞',recipe:'Soak dal, blend into batter; fill with sautéed paneer & veggies.',ingredients:'Moong dal, paneer, onions, peppers, coriander',hasEgg:false,fav:false,timesCooked:0},
   {name:'Yogurt Parfait',cuisine:'North Indian',type:'breakfast',icon:'🍦',recipe:'Layer yogurt, fruit & granola; top with seeds.',ingredients:'Greek yogurt, berries, banana, granola, flax seeds',hasEgg:false,fav:false,timesCooked:0},
   {name:'Dal Dhokli',cuisine:'Gujarati',type:'lunch',icon:'🫕',recipe:'Wheat flour dumplings simmered in sweet-tangy tuvar dal.',ingredients:'Wheat flour, tuvar dal, tomato, spices',hasEgg:false,fav:true,timesCooked:4},
-  {name:'Rajma Chawal',cuisine:'North Indian',type:'lunch',icon:'🍛',recipe:'Kidney beans in rich tomato-onion gravy. Serve with steamed basmati rice.',ingredients:'Kidney beans, tomato, onion, basmati rice, spices',hasEgg:false,fav:true,timesCooked:9},
+  {name:'Rajma Chawal',cuisine:'North Indian',type:'lunch',icon:'🍛',recipe:'Kidney beans in rich tomato-onion gravy with steamed basmati rice.',ingredients:'Kidney beans, tomato, onion, basmati rice, spices',hasEgg:false,fav:true,timesCooked:9},
   {name:'Veg Biryani',cuisine:'North Indian',type:'lunch',icon:'🍚',recipe:'Aromatic basmati rice layered with mixed vegetables & whole spices.',ingredients:'Basmati rice, mixed vegetables, whole spices, yogurt',hasEgg:false,fav:false,timesCooked:7},
   {name:'Chole Bhature',cuisine:'North Indian',type:'lunch',icon:'🫔',recipe:'Spiced chickpea curry with deep-fried fluffy bread.',ingredients:'Chickpeas, flour, tomato, spices',hasEgg:false,fav:false,timesCooked:5},
   {name:'Pav Bhaji',cuisine:'Maharashtrian',type:'lunch',icon:'🍞',recipe:'Mixed vegetable bhaji on tawa with butter. Served with toasted pav.',ingredients:'Mixed veggies, potatoes, peas, paneer, pav buns, butter',hasEgg:false,fav:true,timesCooked:11},
   {name:'Kadhi Chawal',cuisine:'Gujarati',type:'lunch',icon:'🍲',recipe:'Yogurt-based kadhi with pakodas over steamed rice.',ingredients:'Yogurt, gram flour, rice, spices',hasEgg:false,fav:false,timesCooked:6},
-  {name:'Baingan Bharta',cuisine:'North Indian',type:'lunch',icon:'🫕',recipe:'Smoky roasted eggplant with onion, tomato & spices. Serve with roti.',ingredients:'Eggplant, onion, tomato, garlic, spices',hasEgg:false,fav:false,timesCooked:3},
+  {name:'Baingan Bharta',cuisine:'North Indian',type:'lunch',icon:'🫕',recipe:'Smoky roasted eggplant with onion, tomato & spices.',ingredients:'Eggplant, onion, tomato, garlic, spices',hasEgg:false,fav:false,timesCooked:3},
   {name:'Paneer Frankie',cuisine:'Maharashtrian',type:'lunch',icon:'🫓',recipe:'Sauté paneer & veggies; roll in whole wheat wrap with chutney.',ingredients:'Paneer, whole wheat wrap, onion, bell pepper, spices',hasEgg:false,fav:false,timesCooked:0},
-  {name:'Spinach-Corn Pasta',cuisine:'Italian',type:'lunch',icon:'🍝',recipe:'Boil pasta; sauté veggies; mix with cheese or sauce.',ingredients:'Whole wheat pasta, spinach, corn, cheese or white sauce',hasEgg:false,fav:false,timesCooked:0},
-  {name:'Pizza Paratha',cuisine:'Italian',type:'lunch',icon:'🫓',recipe:'Stuff dough with cheese & veggies; cook on tawa.',ingredients:'Whole wheat dough, cheese, veggies, pizza seasoning',hasEgg:false,fav:false,timesCooked:0},
+  {name:'Spinach-Corn Pasta',cuisine:'Italian',type:'lunch',icon:'🍝',recipe:'Boil pasta; sauté veggies; mix with cheese or sauce.',ingredients:'Whole wheat pasta, spinach, corn, cheese',hasEgg:false,fav:false,timesCooked:0},
   {name:'Paneer Paratha',cuisine:'North Indian',type:'lunch',icon:'🫓',recipe:'Stuff dough with spiced paneer; roll & cook on tawa.',ingredients:'Whole wheat flour, paneer, spices, coriander',hasEgg:false,fav:false,timesCooked:0},
-  {name:'Manchurian Balls + Lemon Rice',cuisine:'Indo-chinese',type:'lunch',icon:'🍚',recipe:'Bake/pan-fry balls; toss in sauce; serve with lemon rice.',ingredients:'Cabbage, carrots, beans, paneer, soy sauce; rice, lemon, mustard seeds',hasEgg:false,fav:false,timesCooked:0},
   {name:'Mini Veg Burgers',cuisine:'Maharashtrian',type:'lunch',icon:'🫓',recipe:'Assemble burgers with protein patties & veggies.',ingredients:'Whole wheat bun, paneer or bean-lentil patty, lettuce',hasEgg:false,fav:false,timesCooked:0},
-  {name:'Masala Dosa (Mini)',cuisine:'South Indian',type:'lunch',icon:'🥞',recipe:'Make mini dosas; fill with lightly spiced potato & paneer filling.',ingredients:'Dosa batter, potato, paneer, spices',hasEgg:false,fav:false,timesCooked:0},
   {name:'Veg Sandwich',cuisine:'North Indian',type:'lunch',icon:'🫓',recipe:'Layer veggies & protein spread between toasted bread slices.',ingredients:'Whole wheat bread, cucumber, tomato, paneer spread, lettuce, chutney',hasEgg:false,fav:false,timesCooked:0},
   {name:'Samosa & Chai',cuisine:'North Indian',type:'snacks',icon:'🔺',recipe:'Crispy pastry with spiced potato-pea filling. Serve with green chutney & masala chai.',ingredients:'Flour, potato, peas, spices, tea',hasEgg:false,fav:true,timesCooked:15},
   {name:'Dhokla',cuisine:'Gujarati',type:'snacks',icon:'🟡',recipe:'Steamed fermented chickpea flour cake with tempering of mustard & curry leaves.',ingredients:'Chickpea flour, yogurt, mustard seeds, curry leaves',hasEgg:false,fav:false,timesCooked:6},
-  {name:'Manchurian',cuisine:'Indo-chinese',type:'snacks',icon:'🥢',recipe:'Crispy fried veggie balls tossed in Indo-Chinese soy sauce gravy.',ingredients:'Cabbage, carrots, beans, soy sauce, garlic, ginger',hasEgg:false,fav:false,timesCooked:4},
+  {name:'Manchurian',cuisine:'Indo-chinese',type:'snacks',icon:'🥢',recipe:'Crispy fried veggie balls tossed in Indo-Chinese soy sauce gravy.',ingredients:'Cabbage, carrots, beans, soy sauce, garlic',hasEgg:false,fav:false,timesCooked:4},
   {name:'Moong Sprout Chaat',cuisine:'North Indian',type:'snacks',icon:'🥗',recipe:'Mix sprouts, chopped veggies, lemon juice & chaat masala.',ingredients:'Moong sprouts, cucumber, tomato, lemon, chaat masala',hasEgg:false,fav:false,timesCooked:0},
-  {name:'Paneer & Cucumber Sticks',cuisine:'North Indian',type:'snacks',icon:'🧀',recipe:'Sprinkle chaat masala & lemon over paneer & cucumber sticks.',ingredients:'Paneer cubes, cucumber sticks, chaat masala, lemon juice',hasEgg:false,fav:false,timesCooked:0},
-  {name:'Hummus & Veggie Wrap',cuisine:'North Indian',type:'snacks',icon:'🫙',recipe:'Spread hummus on wrap; add veggies; roll and slice.',ingredients:'Whole wheat wrap, hummus, carrot, cucumber strips',hasEgg:false,fav:false,timesCooked:0},
+  {name:'Paneer & Cucumber Sticks',cuisine:'North Indian',type:'snacks',icon:'🧀',recipe:'Sprinkle chaat masala & lemon over paneer & cucumber sticks.',ingredients:'Paneer cubes, cucumber sticks, chaat masala, lemon',hasEgg:false,fav:false,timesCooked:0},
+  {name:'Hummus & Veggie Wrap',cuisine:'North Indian',type:'snacks',icon:'🫙',recipe:'Spread hummus on wrap; add veggies; roll and slice.',ingredients:'Whole wheat wrap, hummus, carrot, cucumber',hasEgg:false,fav:false,timesCooked:0},
   {name:'Greek Yogurt with Nuts & Honey',cuisine:'North Indian',type:'snacks',icon:'🍦',recipe:'Mix yogurt with nuts and drizzle honey on top.',ingredients:'Greek yogurt, mixed nuts, honey',hasEgg:false,fav:false,timesCooked:0},
   {name:'Corn & Paneer Chaat',cuisine:'North Indian',type:'snacks',icon:'🌽',recipe:'Mix corn and paneer; add lemon juice and chaat masala.',ingredients:'Boiled corn, paneer cubes, lemon, chaat masala',hasEgg:false,fav:false,timesCooked:0},
-  {name:'Chana Chaat',cuisine:'North Indian',type:'snacks',icon:'🥗',recipe:'Mix all ingredients; season with chaat masala & lemon juice.',ingredients:'Boiled chickpeas, onion, tomato, green chili, chaat masala, lemon',hasEgg:false,fav:false,timesCooked:0},
-  {name:'Fruit & Nut Yogurt Bowl',cuisine:'North Indian',type:'snacks',icon:'🍦',recipe:'Mix fruits and nuts into yogurt for a filling snack.',ingredients:'Greek yogurt, chopped fruits, walnuts or almonds',hasEgg:false,fav:false,timesCooked:0},
-  {name:'Dal Makhani',cuisine:'North Indian',type:'dinner',icon:'🫕',recipe:'Slow-cooked black lentils with butter & cream. Rich & deeply flavoured.',ingredients:'Black lentils, butter, cream, tomato, spices',hasEgg:false,fav:true,timesCooked:8},
+  {name:'Chana Chaat',cuisine:'North Indian',type:'snacks',icon:'🥗',recipe:'Mix all; season with chaat masala & lemon juice.',ingredients:'Boiled chickpeas, onion, tomato, green chili, chaat masala',hasEgg:false,fav:false,timesCooked:0},
+  {name:'Fruit & Nut Yogurt Bowl',cuisine:'North Indian',type:'snacks',icon:'🍦',recipe:'Mix fruits and nuts into yogurt.',ingredients:'Greek yogurt, chopped fruits, walnuts or almonds',hasEgg:false,fav:false,timesCooked:0},
+  {name:'Dal Makhani',cuisine:'North Indian',type:'dinner',icon:'🫕',recipe:'Slow-cooked black lentils with butter & cream.',ingredients:'Black lentils, butter, cream, tomato, spices',hasEgg:false,fav:true,timesCooked:8},
   {name:'Palak Paneer',cuisine:'North Indian',type:'dinner',icon:'🥬',recipe:'Cottage cheese in smooth spiced spinach gravy. Serve with roti or naan.',ingredients:'Spinach, paneer, garlic, ginger, cream, spices',hasEgg:false,fav:true,timesCooked:10},
-  {name:'Tacos de Verdura',cuisine:'Mexican',type:'dinner',icon:'🌮',recipe:'Corn tortillas with sautéed peppers, beans & avocado. Top with salsa & lime.',ingredients:'Corn tortillas, peppers, beans, avocado, salsa',hasEgg:false,fav:false,timesCooked:1},
+  {name:'Tacos de Verdura',cuisine:'Mexican',type:'dinner',icon:'🌮',recipe:'Corn tortillas with sautéed peppers, beans & avocado.',ingredients:'Corn tortillas, peppers, beans, avocado, salsa',hasEgg:false,fav:false,timesCooked:1},
   {name:'Puri Shak',cuisine:'Gujarati',type:'dinner',icon:'🫙',recipe:'Puffed fried bread with mild potato-tomato curry.',ingredients:'Flour, potato, tomato, mustard seeds, curry leaves',hasEgg:false,fav:false,timesCooked:3},
   {name:'Okra & Potato Sabzi',cuisine:'North Indian',type:'dinner',icon:'🫕',recipe:'Temper mustard & cumin; sauté potatoes and okra with spices till tender.',ingredients:'Okra, potatoes, mustard seeds, cumin, turmeric, garlic',hasEgg:false,fav:false,timesCooked:0},
   {name:'Aloo Gobi',cuisine:'North Indian',type:'dinner',icon:'🫕',recipe:'Cook potatoes & cauliflower with spices and tomato base till soft.',ingredients:'Potatoes, cauliflower, turmeric, cumin, coriander, tomato',hasEgg:false,fav:false,timesCooked:0},
   {name:'Aloo Matar',cuisine:'North Indian',type:'dinner',icon:'🫕',recipe:'Cook onion, tomato, spices; add potatoes & peas; simmer till tender.',ingredients:'Potatoes, green peas, onion, tomato, ginger, garam masala',hasEgg:false,fav:false,timesCooked:0},
-  {name:'Carrot & French Beans Stir Fry',cuisine:'South Indian',type:'dinner',icon:'🥗',recipe:'Temper mustard seeds; sauté veggies with mild spices till cooked.',ingredients:'Carrots, French beans, mustard seeds, curry leaves, oil',hasEgg:false,fav:false,timesCooked:0},
   {name:'Mixed Vegetable Sabzi',cuisine:'North Indian',type:'dinner',icon:'🫕',recipe:'Sauté mixed veggies with cumin, coriander & turmeric; finish with lemon.',ingredients:'Beans, peas, carrots, capsicum, spices',hasEgg:false,fav:false,timesCooked:0},
   {name:'Paneer Vegetable Kofta Curry',cuisine:'North Indian',type:'dinner',icon:'🫕',recipe:'Make kofta balls; fry/bake; simmer in tomato gravy.',ingredients:'Grated vegetables, paneer, gram flour, spices, tomato gravy',hasEgg:false,fav:false,timesCooked:0},
   {name:'Cauliflower Masala',cuisine:'North Indian',type:'dinner',icon:'🫕',recipe:'Cook cauliflower in spiced tomato gravy till tender.',ingredients:'Cauliflower, onion, tomato, ginger, garlic, spices',hasEgg:false,fav:false,timesCooked:0},
 ];
+BI.forEach((m,i)=>{if(saved.removedIds&&saved.removedIds.includes(i+1))return;const meal={...m,id:i+1};meals.push(meal);if(!saved.likedItems)S.likedItems[meal.id]='liked';if(!saved.starredItems&&meal.fav)S.starredItems[meal.id]=true;});
+if(saved.customMeals)saved.customMeals.forEach(m=>{meals.push(m);nextId=Math.max(nextId,m.id+1);});
 
-// Build meals, apply saved state
-builtInMeals.forEach((m, i) => {
-  if (saved.removedIds && saved.removedIds.includes(i+1)) return;
-  const meal = {...m, id:i+1};
-  meals.push(meal);
-  if (!saved.likedItems) S.likedItems[meal.id] = 'liked';
-  if (!saved.starredItems && meal.fav) S.starredItems[meal.id] = true;
-});
-// Restore custom meals
-if (saved.customMeals) {
-  saved.customMeals.forEach(m => { meals.push(m); nextId = Math.max(nextId, m.id+1); });
+const mealSlots=['breakfast','lunch','snacks','dinner'];
+const mealLabels={breakfast:'Breakfast',lunch:'Lunch',snacks:'Evening Snacks',dinner:'Dinner'};
+const slotEmoji={breakfast:'☀️',lunch:'🌤',snacks:'🌅',dinner:'🌙'};
+const DOW_N=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const DOW_F=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const cColors={Gujarati:'#D97706','South Indian':'#059669','North Indian':'#DC2626','Indo-chinese':'#B45309',Korean:'#7C3AED',Italian:'#0891B2',Mexican:'#EA580C',Maharashtrian:'#DB2777',Rajasthani:'#CA8A04'};
+const cuisines=['Gujarati','South Indian','North Indian','Indo-chinese','Korean','Italian','Mexican','Maharashtrian','Rajasthani'];
+const nutLbls={protein:'💪 Protein',carb:'🌾 Carbs',vitamin:'🥦 Vitamins',fiber:'🌿 Fiber',calcium:'🦴 Calcium',lowcal:'🪶 Light'};
+const nutCls={protein:'nt-protein',carb:'nt-carb',vitamin:'nt-vitamin',fiber:'nt-fiber',calcium:'nt-calcium',lowcal:'nt-lowcal'};
+const freqL={daily:'Every day',weekly:'Weekly',fortnightly:'Fortnightly',monthly:'Monthly'};
+const swapSVG=`<svg viewBox="0 0 18 18" fill="none" width="16" height="16"><path d="M3 6h9.5M3 6l2.5-2.5M3 6l2.5 2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 12H5.5M15 12l-2.5-2.5M15 12l-2.5 2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+function getCurSlot(){const h=new Date().getHours();if(h>=6&&h<11)return'breakfast';if(h>=11&&h<15)return'lunch';if(h>=15&&h<19)return'snacks';return'dinner';}
+function getPool(slot){return meals.filter(m=>m.type===slot&&S.likedItems[m.id]!=='disliked'&&!(m.hasEgg&&!S.eggsOn));}
+function getPK(d,slot){return dKey(d)+'_'+slot;}
+function getPickForDate(date,slot){
+  const k=getPK(date,slot);
+  if(S.picks[k]){const m=meals.find(x=>x.id===S.picks[k].id||x.id===S.picks[k]);if(m)return m;}
+  const dow=getDOW(date);const pk=dow+'_'+slot;
+  if(S.weekPlan[pk]){const m=meals.find(x=>x.id===S.weekPlan[pk]);if(m){S.picks[k]=m;return m;}}
+  const pool=getPool(slot);if(!pool.length)return null;
+  const favs=pool.filter(m=>m.fav||S.starredItems[m.id]);
+  const src=(Math.random()<0.7&&favs.length)?favs:pool;
+  const picked=src[Math.floor(Math.random()*src.length)];
+  S.picks[k]=picked;return picked;
+}
+function setPickForDate(date,slot,meal){S.picks[getPK(date,slot)]=meal;saveState();}
+
+function switchTab(tab,el){S.currentTab=tab;S.expandedCards={};S.dayView=false;document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));const tb=document.getElementById('tabBar');if(tab==='settings'){tb.style.display='none';}else{tb.style.display='flex';if(el)el.classList.add('active');}render();}
+
+let pressTimer=null;
+function startPress(e,slot,dateStr){if(e.target.closest('.icon-btn')||e.target.closest('a'))return;pressTimer=setTimeout(()=>openSheet(slot,new Date(dateStr+'T00:00:00')),450);}
+function cancelPress(){clearTimeout(pressTimer);}
+
+function openSheet(slot,date){
+  const meal=getPickForDate(date,slot);
+  S.sheetSlot=slot;S.sheetDate=date;
+  document.getElementById('sheetTitle').textContent=mealLabels[slot];
+  document.getElementById('sheetMealName').textContent=meal?meal.name:'No meal set';
+  const isStar=meal&&S.starredItems[meal.id];
+  document.getElementById('sheetActions').innerHTML=`
+    <div class="sheet-action" onclick="sheetSwap()"><div class="sa-icon" style="background:#CCFBF1">⇄</div><div><div class="sa-text">Suggest another</div><div class="sa-sub">Get a different dish</div></div></div>
+    <div class="sheet-action" onclick="openManual()"><div class="sa-icon" style="background:#FEF3C7">✏️</div><div><div class="sa-text">Choose manually</div><div class="sa-sub">Search and pick a dish</div></div></div>
+    <div class="sheet-action" onclick="sheetEdit()"><div class="sa-icon" style="background:#EDE9FE">⚙️</div><div><div class="sa-text">Edit dish</div><div class="sa-sub">Recipe, video link, meal slots, frequency</div></div></div>
+    <div class="sheet-action" onclick="sheetWA()"><div class="sa-icon" style="background:#D1FAE5">📲</div><div><div class="sa-text">Send to cook via WhatsApp</div></div></div>
+    <div class="sheet-action" onclick="sheetStar()"><div class="sa-icon" style="background:#FEF9C3">⭐</div><div><div class="sa-text">${isStar?'Remove from favourites':'Add to favourites'}</div></div></div>
+  `;
+  document.getElementById('sheetBg').classList.add('open');
+  document.getElementById('sheet').classList.add('open');
+}
+function closeSheet(){document.getElementById('sheetBg').classList.remove('open');document.getElementById('sheet').classList.remove('open');}
+function sheetSwap(){const date=S.sheetDate,slot=S.sheetSlot;const pool=getPool(slot);const cur=getPickForDate(date,slot);const others=pool.filter(m=>!cur||m.id!==cur.id);const src=others.length?others:pool;setPickForDate(date,slot,src[Math.floor(Math.random()*src.length)]);closeSheet();toast('✦ New suggestion!');render();}
+function sheetStar(){const meal=getPickForDate(S.sheetDate,S.sheetSlot);if(!meal)return;S.starredItems[meal.id]=!S.starredItems[meal.id];saveState();toast(S.starredItems[meal.id]?'⭐ Added to favourites':'Removed from favourites');closeSheet();render();}
+function sheetWA(){const meal=getPickForDate(S.sheetDate,S.sheetSlot);if(!meal)return;const ed=S.mealEdits[meal.id]||{};const cook=S.cookName?`\n\nPlease cook this for us, ${S.cookName}! 🙏`:'';const url=ed.url?`\n\n🎥 ${ed.url}`:'';const msg=encodeURIComponent(`*🍽 ${meal.name}* (${meal.cuisine})\n\n📜 ${ed.recipe||meal.recipe}${url}${cook}\n\n_Sent from Meal Planner_`);const base=S.cookPhone?`https://wa.me/${S.cookPhone.replace(/\D/g,'')}`:'https://wa.me/';window.open(base+'?text='+msg,'_blank');closeSheet();}
+function sheetEdit(){const meal=getPickForDate(S.sheetDate,S.sheetSlot);if(!meal)return;closeSheet();openEdit(meal.id);}
+
+function openEdit(id){
+  const meal=meals.find(m=>m.id===id);if(!meal)return;
+  const ed=S.mealEdits[id]||{};
+  const slots=ed.slots||[meal.type];
+  const freq=ed.freq||'weekly';
+  document.getElementById('editBody').innerHTML=`
+    <div style="height:8px"></div>
+    <div class="edit-field"><label class="edit-label">Recipe</label><textarea class="edit-textarea" id="ei-recipe">${ed.recipe||meal.recipe}</textarea></div>
+    <div class="edit-field"><label class="edit-label">YouTube / Instagram URL</label><input class="edit-input" id="ei-url" placeholder="https://youtube.com/..." value="${ed.url||''}" type="url"/></div>
+    <div class="edit-field"><label class="edit-label">Show in meal slots</label><div class="slot-checks">${mealSlots.map(s=>`<div class="slot-check${slots.includes(s)?' checked':''}" onclick="this.classList.toggle('checked')" data-slot="${s}">${slotEmoji[s]} ${mealLabels[s]}</div>`).join('')}</div></div>
+    <div class="edit-field"><label class="edit-label">Suggestion frequency</label><div class="freq-opts">${Object.entries(freqL).map(([k,v])=>`<div class="freq-opt${freq===k?' sel':''}" onclick="document.querySelectorAll('.freq-opt').forEach(x=>x.classList.remove('sel'));this.classList.add('sel')" data-freq="${k}">${v}</div>`).join('')}</div></div>
+    <button class="edit-save" onclick="saveEdit(${id})">Save changes</button>
+    <div style="height:24px"></div>`;
+  document.getElementById('editBg').classList.add('open');
+  document.getElementById('editSheet').classList.add('open');
+}
+function closeEdit(){document.getElementById('editBg').classList.remove('open');document.getElementById('editSheet').classList.remove('open');}
+function saveEdit(id){
+  const recipe=document.getElementById('ei-recipe').value.trim();
+  const url=document.getElementById('ei-url').value.trim();
+  const slots=[...document.querySelectorAll('.slot-check.checked')].map(x=>x.dataset.slot);
+  const freqEl=document.querySelector('.freq-opt.sel');
+  const freq=freqEl?freqEl.dataset.freq:'weekly';
+  if(!slots.length){toast('Select at least one meal slot');return;}
+  S.mealEdits[id]={recipe,url,slots,freq};
+  const meal=meals.find(m=>m.id===id);
+  if(meal&&slots.length===1)meal.type=slots[0];
+  saveState();closeEdit();toast('Saved ✓');render();
 }
 
-const mealSlots = ['breakfast','lunch','snacks','dinner'];
-const mealLabels = {breakfast:'Breakfast',lunch:'Lunch',snacks:'Evening Snacks',dinner:'Dinner'};
-const slotEmoji = {breakfast:'☀️',lunch:'🌤',snacks:'🌅',dinner:'🌙'};
-const cuisineColors = {Gujarati:'#D97706','South Indian':'#059669','North Indian':'#DC2626','Indo-chinese':'#B45309',Korean:'#7C3AED',Italian:'#0891B2',Mexican:'#EA580C',Maharashtrian:'#DB2777',Rajasthani:'#CA8A04'};
-const cuisines = ['Gujarati','South Indian','North Indian','Indo-chinese','Korean','Italian','Mexican','Maharashtrian','Rajasthani'];
-const nutLabels = {protein:'💪 Protein',carb:'🌾 Carbs',vitamin:'🥦 Vitamins',fiber:'🌿 Fiber',calcium:'🦴 Calcium',iron:'⚡ Iron',lowcal:'🪶 Light'};
-const nutClass = {protein:'nt-protein',carb:'nt-carb',vitamin:'nt-vitamin',fiber:'nt-fiber',calcium:'nt-calcium',iron:'nt-iron',lowcal:'nt-lowcal'};
-const swapSVG = `<svg viewBox="0 0 18 18" fill="none" width="17" height="17"><path d="M3 6h9.5M3 6l2.5-2.5M3 6l2.5 2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 12H5.5M15 12l-2.5-2.5M15 12l-2.5 2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+function openManual(){closeSheet();document.getElementById('manualSearch').value='';document.getElementById('manualBg').classList.add('open');document.getElementById('manualSheet').classList.add('open');setTimeout(()=>document.getElementById('manualSearch').focus(),350);renderManualResults();}
+function closeManual(){document.getElementById('manualBg').classList.remove('open');document.getElementById('manualSheet').classList.remove('open');}
+function renderManualResults(){const q=(document.getElementById('manualSearch').value||'').toLowerCase();const pool=meals.filter(m=>!q||m.name.toLowerCase().includes(q)).slice(0,14);document.getElementById('manualResults').innerHTML=pool.map(m=>`<div class="manual-result" onclick="pickManual(${m.id})"><div class="mr-icon">${m.icon}</div><div class="mr-info"><div class="mr-name">${m.name}</div><div class="mr-sub">${m.cuisine} · ${mealLabels[m.type]}</div></div></div>`).join('')||`<div style="color:var(--muted);font-size:13px;padding:10px 0">No dishes found</div>`;}
+function pickManual(id){const m=meals.find(x=>x.id===id);if(!m)return;setPickForDate(S.sheetDate,S.sheetSlot,m);closeManual();toast('✓ Set to '+m.name);render();}
 
-// ── Core logic ────────────────────────────────────────────────────────────
-function toast(msg) {
-  const t = document.getElementById('toast');
-  if (!t) return;
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
+function photoTag(meal){
+  const ed=S.mealEdits[meal.id]||{};
+  const url=photos[meal.name];
+  const fb=`<div class="meal-photo-fb">${meal.icon}</div>`;
+  const img=url?`<img class="meal-photo" src="${url}" onerror="this.style.display='none';this.nextSibling.style.display='flex'" loading="lazy"/>${fb.replace('meal-photo-fb','meal-photo-fb" style="display:none'}`:`<div class="meal-photo-fb">${meal.icon}</div>`;
+  if(ed.url){return`<div class="meal-photo-wrap"><a href="${ed.url}" target="_blank" onclick="event.stopPropagation()">${img}<div class="play-overlay"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></a></div>`;}
+  return`<div class="meal-photo-wrap">${img}</div>`;
 }
+function getNT(m){return gN(m.name,m.ingredients||'').map(t=>`<span class="nt ${nutCls[t]}">${nutLbls[t]}</span>`).join('');}
 
-function getCurrentSlot() {
-  const h = new Date().getHours();
-  if (h>=6&&h<11) return 'breakfast';
-  if (h>=11&&h<15) return 'lunch';
-  if (h>=15&&h<19) return 'snacks';
-  return 'dinner';
-}
-
-function getPool(slot) {
-  return meals.filter(m => m.type===slot && S.likedItems[m.id]!=='disliked' && !(m.hasEgg&&!S.eggsOn));
-}
-
-function pickForSlot(slot) {
-  const pool = getPool(slot);
-  if (!pool.length) return null;
-  const favs = pool.filter(m => m.fav || S.starredItems[m.id]);
-  const src = (Math.random()<0.7 && favs.length) ? favs : pool;
-  return src[Math.floor(Math.random()*src.length)];
-}
-
-function ensurePicks() {
-  mealSlots.forEach(slot => {
-    const cur = S.picks[slot];
-    if (!cur || !getPool(slot).find(m => m.id===cur.id)) {
-      S.picks[slot] = pickForSlot(slot);
-    }
-  });
-}
-
-function getPick(slot) {
-  return S.picks[slot] || meals.find(m => m.type===slot) || meals[0];
-}
-
-function photoTag(name, cls) {
-  const url = photos[name];
-  const fb = guessIcon(name);
-  if (url) return `<img class="${cls}" src="${url}" onerror="this.style.display='none';this.nextSibling.style.display='flex'" loading="lazy"/><div class="${cls}-fb" style="display:none">${fb}</div>`;
-  return `<div class="${cls}-fb">${fb}</div>`;
-}
-
-function getNutTags(m) {
-  return guessNut(m.name, m.ingredients||'').map(t=>`<span class="nt ${nutClass[t]}">${nutLabels[t]}</span>`).join('');
-}
-
-// ── Actions ───────────────────────────────────────────────────────────────
-function switchTab(tab, el) {
-  S.currentTab = tab;
-  S.expandedCards = {};
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  const tb = document.getElementById('tabBar');
-  if (tab==='settings') { tb.style.display='none'; }
-  else { tb.style.display='flex'; if(el) el.classList.add('active'); }
-  render();
-}
-
-function toggleCard(slot) { S.expandedCards[slot]=!S.expandedCards[slot]; render(); }
-function toggleSlot(slot) { S.expandedSlots[slot]=!S.expandedSlots[slot]; render(); }
-
-function swapMeal(slot, e) {
-  e.stopPropagation();
-  const btn = e.currentTarget;
-  btn.classList.add('spinning');
-  setTimeout(() => btn.classList.remove('spinning'), 420);
-  const pool = getPool(slot);
-  const cur = S.picks[slot];
-  const others = pool.filter(m => !cur || m.id!==cur.id);
-  const src = others.length ? others : pool;
-  S.picks[slot] = src[Math.floor(Math.random()*src.length)];
-  saveState();
-  toast('✦ New suggestion!');
-  render();
-}
-
-function toggleStar(id, e) {
-  e.stopPropagation();
-  S.starredItems[id] = !S.starredItems[id];
-  saveState();
-  toast(S.starredItems[id] ? '⭐ Added to favourites' : 'Removed from favourites');
-  render();
-}
-
-function setLike(id, val) { S.likedItems[id]=val; saveState(); render(); }
-
-function removeMeal(id) {
-  if (!confirm('Remove this item from your menu?')) return;
-  meals = meals.filter(m => m.id!==id);
-  delete S.likedItems[id];
-  if (!S.removedIds) S.removedIds = [];
-  S.removedIds.push(id);
-  mealSlots.forEach(s => { if(S.picks[s]&&S.picks[s].id===id) S.picks[s]=null; });
-  ensurePicks();
-  saveState();
-  toast('Removed');
-  render();
-}
-
-function toggleEggs() { S.eggsOn=!S.eggsOn; S.picks={}; ensurePicks(); saveState(); render(); }
-
-function sendWA(id, e) {
-  if (e) e.stopPropagation();
-  const m = meals.find(x=>x.id===id);
-  if (!m) return;
-  const cook = S.cookName ? `\n\nPlease cook this for us, ${S.cookName}! 🙏` : '';
-  const msg = encodeURIComponent(`*🍽 ${m.name}* (${m.cuisine})\n\n📜 ${m.recipe}\n🧺 ${m.ingredients}${cook}\n\n_Sent from Khana Kya Hai_`);
-  const base = S.cookPhone ? `https://wa.me/${S.cookPhone.replace(/\D/g,'')}` : 'https://wa.me/';
-  window.open(base+'?text='+msg, '_blank');
-}
-
-function addNewItem() {
-  const name = document.getElementById('newName').value.trim();
-  const type = document.getElementById('newType').value;
-  const cuisine = document.getElementById('newCuisine').value;
-  const recipe = document.getElementById('newRecipe').value.trim();
-  const ingredients = document.getElementById('newIngr').value.trim();
-  if (!name) { toast('Please enter a dish name'); return; }
-  const id = nextId++;
-  const meal = {id,name,type,cuisine,icon:guessIcon(name),recipe,ingredients,hasEgg:hasEggFn(name,ingredients),liked:true,fav:false,timesCooked:0,isCustom:true};
-  meals.push(meal);
-  S.likedItems[id] = 'liked';
-  S.showAddForm = false;
-  S.expandedSlots[type] = true;
-  saveState();
-  toast('✅ '+name+' added!');
-  render();
-}
-
-function manualAdd() {
-  const name = prompt('What did you cook?');
-  if (name) { S.completedMeals.unshift({name,when:'Today, just now',icon:'🍽'}); saveState(); render(); toast('✅ Added: '+name); }
-}
-
-function showInstallHelp() {
-  alert('To install on iPhone:\n\n1. Tap the Share button (box with arrow) in Safari\n2. Scroll down and tap "Add to Home Screen"\n3. Tap "Add" in the top right\n\nThe app will appear on your home screen like a native app!');
-}
-
-// ── Render functions ──────────────────────────────────────────────────────
-function renderUpcoming() {
-  const now = new Date();
-  document.getElementById('timeChip').textContent =
-    `🕐 ${now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}  ·  ${now.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})}`;
-  ensurePicks();
-  const cur = getCurrentSlot();
-  const next = []; let si=mealSlots.indexOf(cur)+1, day=0;
-  while(next.length<2){if(si>=mealSlots.length){si=0;day++;}next.push({slot:mealSlots[si],meal:getPick(mealSlots[si]),dayLabel:['Today','Tomorrow','Day after'][day]||'Upcoming'});si++;}
-
-  let html = `<div class="toast-anchor"><div class="toast-float" id="toast"></div></div>
-  <div class="la-bar"><div class="la-title">👀 Coming up next</div><div class="la-items">`;
-  next.forEach(la => {
-    html += `<div class="la-item"><div class="la-when">${la.dayLabel} · ${mealLabels[la.slot]}</div><div class="la-name">${la.meal?la.meal.name:'—'}</div><div class="la-cui">${la.meal?la.meal.cuisine:''}</div></div>`;
-  });
-  html += `</div></div>`;
-
-  mealSlots.forEach(slot => {
-    const isCur = slot===cur;
-    const meal = getPick(slot);
-    if (!meal) return;
-    const exp = S.expandedCards[slot];
-    const isStar = S.starredItems[meal.id];
-    const cc = cuisineColors[meal.cuisine]||'#888';
-    html += `<div class="sec-lbl">${slotEmoji[slot]} ${mealLabels[slot]}${isCur?' <span style="color:var(--primary);font-weight:700">· Now</span>':''}</div>
-    <div class="meal-card${isCur?' current':''}" onclick="toggleCard('${slot}')">
-      <div class="meal-hdr">
-        ${photoTag(meal.name,'meal-photo')}
-        <div class="meal-info">
-          <div class="meal-cui" style="color:${cc}">${meal.cuisine}</div>
-          <div class="meal-name">${meal.name}${isStar?'<span class="badge-fav">⭐ Fav</span>':''}${meal.hasEgg?'<span class="badge-egg">🥚</span>':''}</div>
-          <div class="nut-tags">${getNutTags(meal)}</div>
-        </div>
-        <div class="icon-acts">
-          <div class="icon-btn${isStar?' star-on':''}" onclick="toggleStar(${meal.id},event)" style="font-size:16px;color:${isStar?'#F59E0B':'#bbb'}">★</div>
-          <div class="icon-btn" onclick="swapMeal('${slot}',event)" style="color:var(--primary)">${swapSVG}</div>
-        </div>
+function mealCardHTML(meal,slot,date,opts={}){
+  const{isCurrent,expanded}=opts;
+  const ed=S.mealEdits[meal.id]||{};
+  const isStar=S.starredItems[meal.id];
+  const cc=cColors[meal.cuisine]||'#888';
+  const ds=dKey(date);
+  const ck=slot+'_'+ds;
+  return`<div class="meal-card${isCurrent?' current':''}" onmousedown="startPress(event,'${slot}','${ds}')" onmouseup="cancelPress()" onmouseleave="cancelPress()" ontouchstart="startPress(event,'${slot}','${ds}')" ontouchend="cancelPress()" ontouchmove="cancelPress()" onclick="S.expandedCards['${ck}']=!S.expandedCards['${ck}'];render()">
+    <div class="meal-hdr">
+      ${photoTag(meal)}
+      <div class="meal-info">
+        <div class="meal-cui" style="color:${cc}">${meal.cuisine}${ed.url?' 🎥':''}</div>
+        <div class="meal-name">${meal.name}${isStar?'<span class="badge-fav">⭐</span>':''}${meal.hasEgg?'<span class="badge-egg">🥚</span>':''}</div>
+        <div class="nut-tags">${getNT(meal)}</div>
       </div>
-      ${exp?`<div class="meal-body open">
-        <p class="recipe-text">📜 ${meal.recipe}</p>
-        ${meal.ingredients?`<p class="ingr-text">🧺 ${meal.ingredients}</p>`:''}
-        <div class="act-row">
-          <button class="btn btn-p" onclick="sendWA(${meal.id},event)">📲 Send to Cook</button>
-          <button class="btn btn-o" onclick="event.stopPropagation();toast('Recipe editing coming soon!')">✏️ Edit</button>
-        </div>
-      </div>`:''}
-    </div>`;
+      <div class="icon-acts">
+        <div class="icon-btn${isStar?' star-on':''}" onclick="event.stopPropagation();S.starredItems[${meal.id}]=!S.starredItems[${meal.id}];saveState();toast(S.starredItems[${meal.id}]?'⭐ Favourited':'Removed');render()" style="font-size:15px;color:${isStar?'#F59E0B':'#bbb'}">★</div>
+        <div class="icon-btn" onclick="event.stopPropagation();swapD('${slot}','${ds}')" style="color:var(--p)">${swapSVG}</div>
+      </div>
+    </div>
+    ${expanded?`<div class="meal-body open">
+      <p class="recipe-text">📜 ${ed.recipe||meal.recipe}</p>
+      ${meal.ingredients?`<p class="ingr-text">🧺 ${meal.ingredients}</p>`:''}
+      ${ed.url?`<p style="font-size:12px;margin-bottom:10px"><a href="${ed.url}" target="_blank" style="color:var(--p)">🎥 Watch recipe video</a></p>`:''}
+      <div class="act-row">
+        <button class="btn btn-p" onclick="event.stopPropagation();waD(${meal.id})">📲 Send to Cook</button>
+        <button class="btn btn-o" onclick="event.stopPropagation();S.sheetDate=new Date('${ds}T00:00:00');S.sheetSlot='${slot}';openEdit(${meal.id})">✏️ Edit</button>
+      </div>
+    </div>`:''}
+  </div>`;
+}
+function swapD(slot,ds){const date=new Date(ds+'T00:00:00');const pool=getPool(slot);const cur=getPickForDate(date,slot);const others=pool.filter(m=>!cur||m.id!==cur.id);const src=others.length?others:pool;setPickForDate(date,slot,src[Math.floor(Math.random()*src.length)]);toast('✦ New suggestion!');render();}
+function waD(id){const meal=meals.find(m=>m.id===id);if(!meal)return;const ed=S.mealEdits[id]||{};const cook=S.cookName?`\n\nPlease cook this, ${S.cookName}! 🙏`:'';const url=ed.url?`\n\n🎥 ${ed.url}`:'';const msg=encodeURIComponent(`*🍽 ${meal.name}*\n\n📜 ${ed.recipe||meal.recipe}${url}${cook}\n\n_Sent from Meal Planner_`);const base=S.cookPhone?`https://wa.me/${S.cookPhone.replace(/\D/g,'')}`:'https://wa.me/';window.open(base+'?text='+msg,'_blank');}
+
+function renderToday(){
+  const now=new Date();
+  document.getElementById('timeChip').textContent=`🕐 ${now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}  ·  ${now.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})}`;
+  if(S.dayView)return renderDayView();
+  const cur=getCurSlot();const tomorrow=addD(now,1);
+  let html=`<div class="la-bar" onclick="S.dayView=true;S.dayOffset=1;render()">
+    <div class="la-title">Tomorrow's meals <span style="font-size:14px">›</span></div>
+    <div class="la-items">`;
+  ['breakfast','lunch'].forEach(slot=>{const m=getPickForDate(tomorrow,slot);html+=`<div class="la-item"><div class="la-when">${mealLabels[slot]}</div><div class="la-name">${m?m.name:'—'}</div><div class="la-cui">${m?m.cuisine:''}</div></div>`;});
+  html+=`</div></div>`;
+  mealSlots.forEach(slot=>{
+    const isCur=slot===cur;const meal=getPickForDate(now,slot);if(!meal)return;
+    const expanded=S.expandedCards[slot+'_'+dKey(now)];
+    html+=`<div class="sec-lbl">${slotEmoji[slot]} ${mealLabels[slot]}${isCur?' <span style="color:var(--p);font-weight:700">· Now</span>':''}</div>`;
+    html+=mealCardHTML(meal,slot,now,{isCurrent:isCur,expanded});
   });
   return html;
 }
 
-function renderCompleted() {
-  return `<div class="toast-anchor"><div class="toast-float" id="toast"></div></div>
-  <div class="sec-lbl">✅ Cooked today</div>
-  ${S.completedMeals.length ? S.completedMeals.map(m=>`<div class="comp-item"><div class="comp-tick">✓</div><div><div style="font-size:13px;font-weight:600">${m.icon} ${m.name}</div><div style="font-size:11px;color:var(--muted)">${m.when}</div></div></div>`).join('') : `<div style="text-align:center;padding:40px 20px;color:var(--muted)"><div style="font-size:36px;margin-bottom:8px">🍽</div><div>Nothing logged yet today</div></div>`}
-  <div class="manual-btn" onclick="manualAdd()">+ Add what you cooked manually</div>
-  <div class="sec-lbl" style="margin-top:18px">📅 Earlier this week</div>
-  <div class="comp-item"><div class="comp-tick">✓</div><div><div style="font-size:13px;font-weight:600">🥞 Masala Dosa</div><div style="font-size:11px;color:var(--muted)">Yesterday, Breakfast</div></div></div>
-  <div class="comp-item"><div class="comp-tick">✓</div><div><div style="font-size:13px;font-weight:600">🍛 Rajma Chawal</div><div style="font-size:11px;color:var(--muted)">Yesterday, Lunch</div></div></div>`;
+function renderDayView(){
+  const base=new Date();base.setHours(0,0,0,0);
+  const date=addD(base,S.dayOffset);
+  const isToday=S.dayOffset===0;
+  const label=isToday?'Today':S.dayOffset===1?'Tomorrow':fmtD(date,true);
+  let html=`<div class="day-back" onclick="S.dayView=false;render()">← Back</div>
+  <div class="day-nav">
+    <div class="day-nav-btn" onclick="S.dayOffset--;render()">‹</div>
+    <div class="day-date"><div class="day-date-main">${label}</div><div class="day-date-sub">${date.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'})}</div></div>
+    <div class="day-nav-btn" onclick="S.dayOffset++;render()">›</div>
+  </div>`;
+  mealSlots.forEach(slot=>{
+    const meal=getPickForDate(date,slot);if(!meal)return;
+    const expanded=S.expandedCards[slot+'_'+dKey(date)];
+    html+=`<div class="sec-lbl">${slotEmoji[slot]} ${mealLabels[slot]}</div>`;
+    html+=mealCardHTML(meal,slot,date,{expanded});
+  });
+  return html;
 }
 
-function renderDatabase() {
-  const search = window._dbSearch||'';
-  let html = `<div class="toast-anchor"><div class="toast-float" id="toast"></div></div>`;
-  if (S.showAddForm) {
-    html += `<div class="add-card">
-      <div style="font-size:14px;font-weight:600;color:var(--pd);margin-bottom:12px">+ Add new dish</div>
-      <label class="add-label">Dish name</label>
-      <input id="newName" class="add-input" placeholder="e.g. Matar Paneer"/>
-      <label class="add-label">Recipe</label>
-      <input id="newRecipe" class="add-input" placeholder="How to make it..."/>
-      <label class="add-label">Ingredients</label>
-      <input id="newIngr" class="add-input" placeholder="Comma separated ingredients"/>
+function renderWeek(){
+  document.getElementById('timeChip').textContent='Week View';
+  const today=new Date();today.setHours(0,0,0,0);
+  const monday=addD(getMon(today),S.weekOffset*7);
+  let html=`<div class="week-toggle">
+    <div class="week-opt${S.weekOffset===0?' active':''}" onclick="S.weekOffset=0;S.selectedDay=null;render()">This week</div>
+    <div class="week-opt${S.weekOffset===1?' active':''}" onclick="S.weekOffset=1;S.selectedDay=null;render()">Next week</div>
+  </div><div class="week-grid">`;
+  for(let i=0;i<7;i++){
+    const d=addD(monday,i);const dk=dKey(d);const isToday=dk===dKey(today);const isSel=S.selectedDay===i;
+    const hasPlan=mealSlots.some(s=>S.picks[getPK(d,s)]||S.weekPlan[getDOW(d)+'_'+s]);
+    html+=`<div class="week-day${isToday?' today':''}${isSel?' selected':''}${hasPlan?' has-plan':''}" onclick="S.selectedDay=S.selectedDay===${i}?null:${i};render()">
+      <div class="wd-name">${DOW_N[i]}</div><div class="wd-date">${d.getDate()}</div><div class="wd-dot"></div></div>`;
+  }
+  html+=`</div>`;
+  if(S.selectedDay!==null){
+    const selDate=addD(monday,S.selectedDay);const dow=getDOW(selDate);
+    const selLabel=dKey(selDate)===dKey(today)?'Today':DOW_F[S.selectedDay]+', '+fmtD(selDate,true);
+    html+=`<div class="week-expanded"><div class="we-hdr"><span>${selLabel}</span></div>`;
+    mealSlots.forEach(slot=>{
+      const meal=getPickForDate(selDate,slot);
+      html+=`<div class="we-slot" onclick="S.sheetDate=addD(getMon(new Date()),${S.weekOffset}*7+${S.selectedDay});S.sheetSlot='${slot}';openSheet('${slot}',addD(getMon(new Date()),${S.weekOffset}*7+${S.selectedDay}))">
+        <div class="we-slot-icon">${slotEmoji[slot]}</div>
+        <div class="we-slot-info"><div class="we-slot-label">${mealLabels[slot]}</div><div class="we-slot-name">${meal?meal.name:'Tap to set'}</div></div>
+        <div class="we-swap">${swapSVG}</div>
+      </div>`;
+    });
+    html+=`<div style="padding:12px 14px;border-top:1px solid var(--border)">
+      <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">📌 Set as weekly template for every ${DOW_F[dow]}</div>
+      ${mealSlots.map(slot=>{const meal=getPickForDate(selDate,slot);const pk=dow+'_'+slot;const isSet=S.weekPlan[pk]&&S.weekPlan[pk]===(meal&&meal.id);
+        return`<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 0;font-size:13px">
+          <span>${slotEmoji[slot]} ${meal?meal.name:'—'}</span>
+          <span style="color:${isSet?'var(--p)':'#bbb'};cursor:pointer;font-size:12px;font-weight:600;padding:4px 8px;background:${isSet?'var(--pl)':'transparent'};border-radius:8px" onclick="${isSet?`delete S.weekPlan['${pk}']`:`if(${meal?meal.id:0})S.weekPlan['${pk}']=${meal?meal.id:0}`};saveState();toast('${isSet?'Removed from':'Set in'} weekly template');render()">${isSet?'✓ In template':'+ Set template'}</span>
+        </div>`;
+      }).join('')}
+    </div></div>`;
+  } else {
+    html+=`<div style="font-size:12px;color:var(--muted);text-align:center;padding:6px 0 10px">Tap a day to view and edit meals</div>`;
+    for(let i=0;i<7;i++){
+      const d=addD(monday,i);const isToday=dKey(d)===dKey(today);
+      html+=`<div style="background:var(--card);border-radius:12px;border:1.5px solid ${isToday?'var(--p)':'var(--border)'};padding:10px 14px;margin-bottom:8px;cursor:pointer" onclick="S.selectedDay=${i};render()">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <span style="font-size:13px;font-weight:700;color:${isToday?'var(--p)':'var(--text)'}">${DOW_F[i]}, ${fmtD(d,true)}</span>
+          <span style="font-size:12px;color:var(--muted)">›</span>
+        </div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
+          ${mealSlots.map(slot=>{const m=getPickForDate(d,slot);return m?`<span style="font-size:11px;background:var(--pl);color:var(--pd);padding:2px 8px;border-radius:10px">${m.name}</span>`:''}).join('')}
+        </div>
+      </div>`;
+    }
+  }
+  return html;
+}
+
+function renderDatabase(){
+  document.getElementById('timeChip').textContent='My Menu';
+  const search=window._dbSearch||'';
+  let html='';
+  if(S.showAddForm){
+    html+=`<div class="add-card">
+      <div style="font-size:14px;font-weight:600;color:var(--pd);margin-bottom:10px">+ Add new dish</div>
+      <input id="newName" class="add-input" placeholder="Dish name"/>
+      <input id="newRecipe" class="add-input" placeholder="Recipe"/>
+      <input id="newIngr" class="add-input" placeholder="Ingredients"/>
+      <input id="newUrl" class="add-input" placeholder="YouTube / Instagram URL (optional)" type="url"/>
       <div class="add-row">
         <select id="newType" class="add-sel"><option value="breakfast">Breakfast</option><option value="lunch">Lunch</option><option value="snacks">Snacks</option><option value="dinner">Dinner</option></select>
         <select id="newCuisine" class="add-sel">${cuisines.map(c=>`<option value="${c}">${c}</option>`).join('')}</select>
       </div>
-      <div class="add-row-btns">
-        <button class="btn-save" onclick="addNewItem()">Save dish</button>
-        <button class="btn-cancel" onclick="S.showAddForm=false;render()">Cancel</button>
-      </div>
+      <div class="add-row-btns"><button class="btn-save" onclick="addNewItem()">Save</button><button class="btn-cancel" onclick="S.showAddForm=false;render()">Cancel</button></div>
     </div>`;
-  } else {
-    html += `<div class="db-topbar">
-      <input class="db-search" placeholder="🔍 Search dishes..." oninput="window._dbSearch=this.value;render()" value="${search}" id="dbSearch"/>
-      <button class="btn-add" onclick="S.showAddForm=true;render()">+ Add</button>
-    </div>`;
+  }else{
+    html+=`<div class="db-topbar"><input class="db-search" placeholder="🔍 Search dishes..." oninput="window._dbSearch=this.value;render()" value="${search}" id="dbSearch"/><button class="btn-add-sm" onclick="S.showAddForm=true;render()">+ Add</button></div>`;
   }
-  mealSlots.forEach(slot => {
-    const slotMeals = meals.filter(m => m.type===slot && (!search||m.name.toLowerCase().includes(search.toLowerCase())));
-    const open = S.expandedSlots[slot];
-    html += `<div class="slot-grp">
-      <div class="slot-hdr" onclick="toggleSlot('${slot}')">
-        <span class="slot-emoji">${slotEmoji[slot]}</span>
-        <span class="slot-title">${mealLabels[slot]}</span>
-        <span class="slot-count">${slotMeals.length}</span>
-        <span class="slot-chev${open?' open':''}">▶</span>
-      </div>
-      <div class="slot-items${open?' open':''}">
-      ${slotMeals.length===0?`<div style="padding:12px 14px;font-size:13px;color:var(--muted)">No items found</div>`:
-        slotMeals.map(m=>{
-          const lk=S.likedItems[m.id];const cc=cuisineColors[m.cuisine]||'#888';
-          return`<div class="db-row">
-            ${photoTag(m.name,'db-photo')}
-            <div class="db-info">
-              <div class="db-name">${m.name}${S.starredItems[m.id]?' ⭐':''}${m.hasEgg?'<span class="badge-egg" style="margin-left:4px">🥚</span>':''}</div>
-              <div class="db-sub" style="color:${cc}">${m.cuisine} · Cooked ${m.timesCooked}x</div>
-            </div>
-            <div class="db-acts">
-              <div class="like-btn${lk==='liked'?' liked':''}" onclick="setLike(${m.id},'liked')">👍</div>
-              <div class="like-btn${lk==='disliked'?' disliked':''}" onclick="setLike(${m.id},'disliked')">👎</div>
-              <div class="rm-btn" onclick="removeMeal(${m.id})">×</div>
-            </div>
-          </div>`;
-        }).join('')}
-      </div>
-    </div>`;
+  mealSlots.forEach(slot=>{
+    const sm=meals.filter(m=>m.type===slot&&(!search||m.name.toLowerCase().includes(search.toLowerCase())));
+    const open=S.expandedSlots[slot];
+    html+=`<div class="slot-grp"><div class="slot-hdr" onclick="S.expandedSlots['${slot}']=!S.expandedSlots['${slot}'];render()"><span class="slot-emoji">${slotEmoji[slot]}</span><span class="slot-title">${mealLabels[slot]}</span><span class="slot-count">${sm.length}</span><span class="slot-chev${open?' open':''}">▶</span></div>
+    <div class="slot-items${open?' open':''}">
+    ${sm.length===0?`<div style="padding:12px 14px;font-size:13px;color:var(--muted)">No items</div>`:sm.map(m=>{
+      const lk=S.likedItems[m.id];const cc=cColors[m.cuisine]||'#888';const ed=S.mealEdits[m.id]||{};const url=photos[m.name];
+      return`<div class="db-row">
+        ${url?`<img class="db-photo" src="${url}" onerror="this.style.display='none';this.nextSibling.style.display='flex'" loading="lazy"/><div class="db-photo-fb" style="display:none">${m.icon}</div>`:`<div class="db-photo-fb">${m.icon}</div>`}
+        <div class="db-info"><div class="db-name">${m.name}${S.starredItems[m.id]?' ⭐':''}${m.hasEgg?'<span class="badge-egg" style="margin-left:4px">🥚</span>':''}${ed.url?' 🎥':''}</div>
+        <div class="db-sub" style="color:${cc}">${m.cuisine} · ${ed.freq?freqL[ed.freq]:'Weekly'}</div></div>
+        <div class="db-acts">
+          <div class="like-btn${lk==='liked'?' liked':''}" onclick="S.likedItems[${m.id}]='liked';saveState();render()">👍</div>
+          <div class="like-btn${lk==='disliked'?' disliked':''}" onclick="S.likedItems[${m.id}]='disliked';saveState();render()">👎</div>
+          <div class="rm-btn" onclick="removeMeal(${m.id})">×</div>
+        </div>
+      </div>`;
+    }).join('')}</div></div>`;
   });
   return html;
 }
 
-function renderSettings() {
-  document.getElementById('timeChip').textContent = 'Settings';
-  return `<div class="toast-anchor"><div class="toast-float" id="toast"></div></div>
-  <div class="about-card">
-    <div class="about-logo-wrap">
-      <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
-        <path d="M12 2C8 2 5 5 5 9c0 2.5 1.2 4.7 3 6.1V17h8v-1.9c1.8-1.4 3-3.6 3-6.1 0-4-3-7-7-7z" fill="white" opacity="0.95"/>
-        <path d="M9 17v1a3 3 0 006 0v-1H9z" fill="white" opacity="0.6"/>
-        <circle cx="12" cy="9" r="2.2" fill="#0D9488"/>
-      </svg>
-    </div>
-    <div class="about-name">Khana Kya Hai?</div>
-    <div class="about-tagline">Your friendly meal planner</div>
-    <div class="about-ver">Version 1.0.0 · ${meals.length} recipes</div>
-  </div>
+function addNewItem(){
+  const name=document.getElementById('newName').value.trim();const type=document.getElementById('newType').value;const cuisine=document.getElementById('newCuisine').value;const recipe=document.getElementById('newRecipe').value.trim();const ingredients=document.getElementById('newIngr').value.trim();const url=document.getElementById('newUrl').value.trim();
+  if(!name){toast('Please enter a dish name');return;}
+  const id=nextId++;
+  meals.push({id,name,type,cuisine,icon:gI(name),recipe,ingredients,hasEgg:hE(name,ingredients),liked:true,fav:false,timesCooked:0,isCustom:true});
+  S.likedItems[id]='liked';if(url)S.mealEdits[id]={url,slots:[type],freq:'weekly'};
+  S.showAddForm=false;S.expandedSlots[type]=true;saveState();toast('✅ '+name+' added!');render();
+}
+function removeMeal(id){if(!confirm('Remove this item?'))return;meals=meals.filter(m=>m.id!==id);delete S.likedItems[id];if(!S.removedIds)S.removedIds=[];S.removedIds.push(id);Object.keys(S.picks).forEach(k=>{if(S.picks[k]&&(S.picks[k].id===id||S.picks[k]===id))delete S.picks[k];});saveState();toast('Removed');render();}
+
+function renderSettings(){
+  document.getElementById('timeChip').textContent='Settings';
+  return`<div class="about-card"><div class="about-name">Meal Planner</div><div style="font-size:12px;opacity:.7;margin-top:3px">Khana Kya Hai?</div><div class="about-ver">Version 2.0 · ${meals.length} recipes</div></div>
   <div class="sec-lbl">Preferences</div>
-  <div class="s-grp">
-    <div class="s-row notap">
-      <div class="s-ico" style="background:#FEF3C7">🥚</div>
-      <div class="s-lbl"><div class="s-title">Include egg recipes</div><div class="s-sub">Show dishes with eggs in suggestions</div></div>
-      <div class="sw${S.eggsOn?' on':''}" onclick="toggleEggs()"></div>
-    </div>
-  </div>
+  <div class="s-grp"><div class="s-row notap"><div class="s-ico" style="background:#FEF3C7">🥚</div><div class="s-lbl"><div class="s-title">Include egg recipes</div><div class="s-sub">Show dishes with eggs in suggestions</div></div><div class="sw${S.eggsOn?' on':''}" onclick="S.eggsOn=!S.eggsOn;saveState();render()"></div></div></div>
   <div class="sec-lbl">Cook details</div>
   <div class="s-grp">
-    <div class="s-row notap">
-      <div class="s-ico" style="background:#EDE9FE">👨‍🍳</div>
-      <div class="s-lbl"><div class="s-title">Cook's name</div><div class="s-sub">Used in WhatsApp messages</div></div>
-      <input class="s-inp" placeholder="e.g. Ramesh bhai" value="${S.cookName}" oninput="S.cookName=this.value" onblur="saveState()"/>
-    </div>
-    <div class="s-row notap">
-      <div class="s-ico" style="background:#D1FAE5">📱</div>
-      <div class="s-lbl"><div class="s-title">Cook's WhatsApp</div><div class="s-sub">Number with country code</div></div>
-      <input class="s-inp" placeholder="+91 98765 43210" value="${S.cookPhone}" oninput="S.cookPhone=this.value" onblur="saveState()" type="tel"/>
-    </div>
+    <div class="s-row notap"><div class="s-ico" style="background:#EDE9FE">👨‍🍳</div><div class="s-lbl"><div class="s-title">Cook's name</div><div class="s-sub">Used in WhatsApp messages</div></div><input class="s-inp" placeholder="e.g. Ramesh bhai" value="${S.cookName}" oninput="S.cookName=this.value" onblur="saveState()"/></div>
+    <div class="s-row notap"><div class="s-ico" style="background:#D1FAE5">📱</div><div class="s-lbl"><div class="s-title">Cook's WhatsApp</div><div class="s-sub">Number with country code</div></div><input class="s-inp" placeholder="+91 98765 43210" value="${S.cookPhone}" oninput="S.cookPhone=this.value" onblur="saveState()" type="tel"/></div>
   </div>
   <div class="sec-lbl">App</div>
   <div class="s-grp">
-    <div class="s-row" onclick="showInstallHelp()">
-      <div class="s-ico" style="background:#CCFBF1">📲</div>
-      <div class="s-lbl"><div class="s-title">Add to Home Screen</div><div class="s-sub">Install as iPhone app</div></div>
-      <span class="s-chev">›</span>
-    </div>
-    <div class="s-row" onclick="if(navigator.share)navigator.share({title:'Khana Kya Hai?',url:location.href});else toast('Copy the URL to share!')">
-      <div class="s-ico" style="background:#DBEAFE">🔗</div>
-      <div class="s-lbl"><div class="s-title">Share app</div><div class="s-sub">Invite family to use this planner</div></div>
-      <span class="s-chev">›</span>
-    </div>
+    <div class="s-row" onclick="showInstallHelp()"><div class="s-ico" style="background:#CCFBF1">📲</div><div class="s-lbl"><div class="s-title">Add to Home Screen</div><div class="s-sub">Install as iPhone app</div></div><span class="s-chev">›</span></div>
+    <div class="s-row" onclick="if(navigator.share)navigator.share({title:'Meal Planner',url:location.href});else toast('Copy the URL to share!')"><div class="s-ico" style="background:#DBEAFE">🔗</div><div class="s-lbl"><div class="s-title">Share app</div></div><span class="s-chev">›</span></div>
   </div>
   <div class="sec-lbl">About</div>
   <div class="s-grp">
-    <div class="s-row notap"><div class="s-ico" style="background:#F0FDF4">🏷</div><div class="s-lbl"><div class="s-title">Version</div></div><div class="s-right">1.0.0</div></div>
-    <div class="s-row notap"><div class="s-ico" style="background:#FEF3C7">🌿</div><div class="s-lbl"><div class="s-title">Diet mode</div></div><div class="s-right" style="color:var(--primary);font-weight:500">Pure Vegetarian</div></div>
-    <div class="s-row notap"><div class="s-ico" style="background:#CCFBF1">🗂</div><div class="s-lbl"><div class="s-title">Recipes in database</div></div><div class="s-right">${meals.length} items</div></div>
-    <div class="s-row" onclick="switchTab('upcoming',document.querySelector('.tab'))">
-      <div class="s-ico" style="background:#FEE2E2">🏠</div>
-      <div class="s-lbl"><div class="s-title">Back to planner</div></div>
-      <span class="s-chev">›</span>
-    </div>
+    <div class="s-row notap"><div class="s-ico" style="background:#CCFBF1">🗂</div><div class="s-lbl"><div class="s-title">Recipes</div></div><div class="s-right">${meals.length} items</div></div>
+    <div class="s-row notap"><div class="s-ico" style="background:#FEF3C7">🌿</div><div class="s-lbl"><div class="s-title">Diet mode</div></div><div class="s-right" style="color:var(--p);font-weight:500">Pure Vegetarian</div></div>
+    <div class="s-row" onclick="switchTab('today',document.querySelector('.tab'))"><div class="s-ico" style="background:#FEE2E2">🏠</div><div class="s-lbl"><div class="s-title">Back to planner</div></div><span class="s-chev">›</span></div>
   </div>`;
 }
-
-function render() {
-  const a = document.getElementById('contentArea');
-  if (S.currentTab==='upcoming') a.innerHTML = renderUpcoming();
-  else if (S.currentTab==='completed') a.innerHTML = renderCompleted();
-  else if (S.currentTab==='database') a.innerHTML = renderDatabase();
-  else a.innerHTML = renderSettings();
-}
-
-// ── Init ──────────────────────────────────────────────────────────────────
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').catch(()=>{});
-}
-
-// Show install banner on iOS Safari if not standalone
-const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-const isStandalone = window.navigator.standalone;
-if (isIOS && !isStandalone) {
-  setTimeout(() => { document.getElementById('installBar').style.display='flex'; }, 1500);
-}
-
-ensurePicks();
+function showInstallHelp(){alert('To install on iPhone:\n\n1. Open this page in Safari\n2. Tap the Share button (↑)\n3. Tap "Add to Home Screen"\n4. Tap Add');}
+function render(){const a=document.getElementById('contentArea');if(S.currentTab==='today')a.innerHTML=renderToday();else if(S.currentTab==='week')a.innerHTML=renderWeek();else if(S.currentTab==='database')a.innerHTML=renderDatabase();else a.innerHTML=renderSettings();}
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+if(isIOS&&!window.navigator.standalone)setTimeout(()=>{document.getElementById('installBar').style.display='flex';},2000);
+mealSlots.forEach(s=>getPickForDate(new Date(),s));
 render();
 </script>
 </body>

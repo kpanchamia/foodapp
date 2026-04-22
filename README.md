@@ -2,50 +2,26 @@
 
 Your friendly Indian meal planner — works as an iPhone home screen app.
 
-## 🌐 Live App
+## Deploy to GitHub Pages (5 minutes)
 
-👉 **[kpanchamia.github.io/foodapp](https://kpanchamia.github.io/foodapp)**
+1. Go to [github.com/new](https://github.com/new)
+2. Create a repo named exactly: `foodapp`
+3. Keep it **Public**, click **Create repository**
+4. Upload all files from this folder (drag & drop on the GitHub page)
+5. Go to **Settings → Pages → Source → main branch → / (root)** → Save
+6. Your app will be live at: `https://YOUR-USERNAME.github.io/foodapp`
 
-## 📱 Add to iPhone Home Screen
+## Add to iPhone Home Screen
 
 1. Open the link above in **Safari** (must be Safari, not Chrome)
 2. Tap the **Share** button (box with arrow ↑)
 3. Scroll down → tap **"Add to Home Screen"**
 4. Tap **Add** → done!
 
-The app will appear on your home screen like a native app — full screen, no browser bar.
-
-## ✨ Features
-
-- 52 vegetarian recipes across Breakfast, Lunch, Evening Snacks & Dinner
-- Cuisines: Gujarati, South Indian, North Indian, Indo-Chinese, Italian, Mexican, Maharashtrian & more
-- Stable daily meal picks — swapping one slot never affects the others
-- ⭐ Mark favourites for higher recommendation frequency
-- 👍 / 👎 Like or dislike items to refine suggestions
-- 🔄 Swap icon to instantly get an alternate suggestion
-- 📲 Send recipe to your cook via WhatsApp
-- 📷 Food photos for all recipes
-- Nutrition tags (Protein, Carbs, Vitamins, Fiber, Calcium, Iron)
-- 🥚 Egg toggle — include or exclude egg-based dishes
-- Add your own recipes with cuisine, recipe & ingredients
-- Remove items from the database
-- All settings, favourites & picks saved on-device (works offline)
-- Installable as a PWA (Progressive Web App)
-
-## 🗂 Project Structure
-
-```
-foodapp/
-├── index.html       # Full app (single file)
-├── manifest.json    # PWA manifest
-├── sw.js            # Service worker (offline support)
-├── icons/
-│   ├── icon-192.png
-│   └── icon-512.png
-└── README.md
-```
-
-## 🛠 Tech
-
-Pure HTML / CSS / JavaScript — no frameworks, no build step, no dependencies.
-Data is stored in `localStorage` on the user's device.
+## Features
+- 52 recipes across Breakfast, Lunch, Snacks & Dinner
+- Stable daily picks — swapping one slot never affects others
+- Offline support via Service Worker
+- All settings & favourites saved to device (localStorage)
+- WhatsApp send to cook
+- Photo-rich recipe cards
