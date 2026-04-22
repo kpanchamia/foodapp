@@ -246,7 +246,20 @@ input,select,textarea{font-size:16px}
 
 <script>
 function loadSaved(){try{return JSON.parse(localStorage.getItem('mp2_state')||'{}')}catch{return{}}}
-function saveState(){try{localStorage.setItem('mp2_state',JSON.stringify({eggsOn:S.eggsOn,cookName:S.cookName,cookPhone:S.cookPhone,starredItems:S.starredItems,likedItems:S.likedItems,picks:S.picks,weekPlan:S.weekPlan,customMeals:meals.filter(m=>m.isCustom),removedIds:S.removedIds,mealEdits:S.mealEdits}))}catch{}}
+function saveState(){
+  try{
+    // Serialize picks as id-only map for clean storage
+    var picksIds={};
+    Object.keys(S.picks).forEach(k=>{var p=S.picks[k];if(p)picksIds[k]=p.id||p;});
+    localStorage.setItem('mp2_state',JSON.stringify({
+      eggsOn:S.eggsOn,cookName:S.cookName,cookPhone:S.cookPhone,
+      starredItems:S.starredItems,likedItems:S.likedItems,
+      picks:picksIds,weekPlan:S.weekPlan,
+      customMeals:meals.filter(m=>m.isCustom),
+      removedIds:S.removedIds,mealEdits:S.mealEdits
+    }));
+  }catch{}
+}
 const saved=loadSaved();
 const S={eggsOn:saved.eggsOn||false,cookName:saved.cookName||'',cookPhone:saved.cookPhone||'',currentTab:'today',dayView:false,dayOffset:0,weekOffset:0,selectedDay:null,expandedCards:{},expandedSlots:{breakfast:true,lunch:true,snacks:true,dinner:true},starredItems:saved.starredItems||{},likedItems:saved.likedItems||{},showAddForm:false,picks:saved.picks||{},weekPlan:saved.weekPlan||{},removedIds:saved.removedIds||[],mealEdits:saved.mealEdits||{},sheetSlot:null,sheetDate:null,editMealId:null};
 const photos={'Poha':'https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=120&q=70','Methi Thepla':'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=120&q=70','Masala Dosa':'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=120&q=70','Idli Sambar':'https://images.unsplash.com/photo-1589301761896-53adc6b30062?w=120&q=70','Upma':'https://images.unsplash.com/photo-1626200419199-391ae4be7a41?w=120&q=70','Aloo Paratha':'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=120&q=70','Yogurt Parfait':'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=120&q=70','PB Smoothie':'https://images.unsplash.com/photo-1553530979-fbb9e4aee36f?w=120&q=70','Egg Bhurji Toast':'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=120&q=70','Masala Omelette':'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=120&q=70','Protein Pancakes':'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=120&q=70','Besan Cheela':'https://images.unsplash.com/photo-1567337710282-00832b415979?w=120&q=70','Dal Dhokli':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Rajma Chawal':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Veg Biryani':'https://images.unsplash.com/photo-1563379091339-03246963d95a?w=120&q=70','Chole Bhature':'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=120&q=70','Pav Bhaji':'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=120&q=70','Paneer Frankie':'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=120&q=70','Spinach-Corn Pasta':'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=120&q=70','Samosa & Chai':'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=120&q=70','Dhokla':'https://images.unsplash.com/photo-1567337710282-00832b415979?w=120&q=70','Manchurian':'https://images.unsplash.com/photo-1563379091339-03246963d95a?w=120&q=70','Moong Sprout Chaat':'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=120&q=70','Greek Yogurt with Nuts & Honey':'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=120&q=70','Fruit & Nut Yogurt Bowl':'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=120&q=70','Hummus & Veggie Wrap':'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=120&q=70','Dal Makhani':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Palak Paneer':'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=120&q=70','Paneer Vegetable Kofta Curry':'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=120&q=70','Aloo Gobi':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Aloo Matar':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Cauliflower Masala':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Mixed Vegetable Sabzi':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Tacos de Verdura':'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=120&q=70','Kadhi Chawal':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Mini Veg Burgers':'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=120&q=70','Veg Sandwich':'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=120&q=70','Paneer Paratha':'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=120&q=70','Chana Chaat':'https://images.unsplash.com/photo-1567337710282-00832b415979?w=120&q=70'};
@@ -256,7 +269,7 @@ function hE(n,i){return/egg|omelette|bhurji|pancake/i.test(n+' '+i);}
 function gN(n,i){const t=(n+' '+i).toLowerCase();const r=[];if(/paneer|egg|protein|moong|chana|sprout|dal|yogurt|greek|nut|peanut|edamame/.test(t))r.push('protein');if(/rice|pasta|bread|roti|paratha|oat|wheat|dosa|idli|potato|aloo|bhaji/.test(t))r.push('carb');if(/spinach|palak|carrot|vegetable|veggie|tomato|bell pepper|cucumber|fruit|berry/.test(t))r.push('vitamin');if(/sprout|moong|chana|bean|lentil|dal|oat|flax|chia/.test(t))r.push('fiber');if(/yogurt|paneer|cheese|milk/.test(t))r.push('calcium');if(/chaat|salad|smoothie/.test(t))r.push('lowcal');return[...new Set(r)].slice(0,3);}
 function getMon(d){const dt=new Date(d);const dy=dt.getDay();const df=dy===0?-6:1-dy;dt.setDate(dt.getDate()+df);dt.setHours(0,0,0,0);return dt;}
 function addD(d,n){const r=new Date(d);r.setDate(r.getDate()+n);return r;}
-function dKey(d){return d.toISOString().split('T')[0];}
+function dKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function fmtD(d,s){return d.toLocaleDateString('en-IN',s?{day:'numeric',month:'short'}:{weekday:'long',day:'numeric',month:'long'});}
 function getDOW(d){const dy=d.getDay();return dy===0?6:dy-1;}
 let nextId=200,meals=[];
@@ -328,7 +341,7 @@ function getPool(slot){return meals.filter(m=>m.type===slot&&S.likedItems[m.id]!
 function getPK(d,slot){return dKey(d)+'_'+slot;}
 function getPickForDate(date,slot){
   const k=getPK(date,slot);
-  if(S.picks[k]){const m=meals.find(x=>x.id===S.picks[k].id||x.id===S.picks[k]);if(m)return m;}
+  if(S.picks[k]!=null){const pid=S.picks[k]&&S.picks[k].id!=null?S.picks[k].id:S.picks[k];const m=meals.find(x=>x.id===pid);if(m)return m;}
   const dow=getDOW(date);const pk=dow+'_'+slot;
   if(S.weekPlan[pk]){const m=meals.find(x=>x.id===S.weekPlan[pk]);if(m){S.picks[k]=m;return m;}}
   const pool=getPool(slot);if(!pool.length)return null;
@@ -508,7 +521,7 @@ function renderWeek(){
     html+=`<div class="week-expanded"><div class="we-hdr"><span>${selLabel}</span></div>`;
     mealSlots.forEach(slot=>{
       const meal=getPickForDate(selDate,slot);
-      html+=`<div class="we-slot" onclick="S.sheetDate=addD(getMon(new Date()),${S.weekOffset}*7+${S.selectedDay});S.sheetSlot='${slot}';openSheet('${slot}',addD(getMon(new Date()),${S.weekOffset}*7+${S.selectedDay}))">
+      html+=`<div class="we-slot" onclick="openSheet('${slot}',new Date('${dKey(selDate)}T12:00:00'))">
         <div class="we-slot-icon">${slotEmoji[slot]}</div>
         <div class="we-slot-info"><div class="we-slot-label">${mealLabels[slot]}</div><div class="we-slot-name">${meal?meal.name:'Tap to set'}</div></div>
         <div class="we-swap">${swapSVG}</div>
@@ -519,7 +532,7 @@ function renderWeek(){
       ${mealSlots.map(slot=>{const meal=getPickForDate(selDate,slot);const pk=dow+'_'+slot;const isSet=S.weekPlan[pk]&&S.weekPlan[pk]===(meal&&meal.id);
         return`<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 0;font-size:13px">
           <span>${slotEmoji[slot]} ${meal?meal.name:'—'}</span>
-          <span style="color:${isSet?'var(--p)':'#bbb'};cursor:pointer;font-size:12px;font-weight:600;padding:4px 8px;background:${isSet?'var(--pl)':'transparent'};border-radius:8px" onclick="${isSet?`delete S.weekPlan['${pk}']`:`if(${meal?meal.id:0})S.weekPlan['${pk}']=${meal?meal.id:0}`};saveState();toast('${isSet?'Removed from':'Set in'} weekly template');render()">${isSet?'✓ In template':'+ Set template'}</span>
+          <span style="color:${isSet?'var(--p)':'#bbb'};cursor:pointer;font-size:12px;font-weight:600;padding:4px 8px;background:${isSet?'var(--pl)':'transparent'};border-radius:8px" onclick="setWeekTemplate('${pk}',${meal?meal.id:0},${isSet})">${isSet?'✓ In template':'+ Set template'}</span>
         </div>`;
       }).join('')}
     </div></div>`;
@@ -616,6 +629,13 @@ function renderSettings(){
   </div>`;
 }
 function showInstallHelp(){alert('To install on iPhone:\n\n1. Open this page in Safari\n2. Tap the Share button (↑)\n3. Tap "Add to Home Screen"\n4. Tap Add');}
+function setWeekTemplate(pk,mealId,isSet){
+  if(isSet){delete S.weekPlan[pk];}
+  else if(mealId){S.weekPlan[pk]=mealId;}
+  saveState();
+  toast(isSet?'Removed from weekly template':'Set in weekly template');
+  render();
+}
 function render(){const a=document.getElementById('contentArea');if(S.currentTab==='today')a.innerHTML=renderToday();else if(S.currentTab==='week')a.innerHTML=renderWeek();else if(S.currentTab==='database')a.innerHTML=renderDatabase();else a.innerHTML=renderSettings();}
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
