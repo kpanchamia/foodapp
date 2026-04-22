@@ -1,6 +1,6 @@
 {
-  "name": "Khana Kya Hai?",
-  "short_name": "Khana",
+  "name": "Meal Planner",
+  "short_name": "Meal Planner",
   "description": "Your friendly meal planner",
   "start_url": "/foodapp/",
   "scope": "/foodapp/",
