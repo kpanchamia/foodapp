@@ -621,7 +621,15 @@ if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(
 const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
 if(isIOS&&!window.navigator.standalone)setTimeout(()=>{document.getElementById('installBar').style.display='flex';},2000);
 mealSlots.forEach(s=>getPickForDate(new Date(),s));
+// Fix tabs sticky top to sit below the header
+function fixTabsTop(){
+  var hdr=document.querySelector('.hdr');
+  var tabs=document.getElementById('tabBar');
+  if(hdr&&tabs){tabs.style.top=hdr.offsetHeight+'px';}
+}
 render();
+fixTabsTop();
+window.addEventListener('resize',fixTabsTop);
 </script>
 </body>
 </html>
