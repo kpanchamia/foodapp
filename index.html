@@ -475,10 +475,11 @@ function openInfoSheet(){
   document.getElementById('infoBody').innerHTML = renderInfoSheet();
   document.getElementById('infoBg').classList.add('open');
   document.getElementById('infoSheet').classList.add('open');
+  addPullDown('infoSheet',closeInfoSheet);
 }
 function closeInfoSheet(){
   document.getElementById('infoBg').classList.remove('open');
-  document.getElementById('infoSheet').classList.remove('open');
+  document.getElementById('infoSheet').style.transform='';document.getElementById('infoSheet').classList.remove('open');
 }
 function renderInfoSheet(){
   var sections = [
@@ -549,6 +550,25 @@ function renderInfoSheet(){
   }).join('');
 }
 
+
+function addPullDown(sheetId, closeFn){
+  var sheet = document.getElementById(sheetId);
+  if(!sheet || sheet._pullDown) return;
+  sheet._pullDown = true;
+  var startY=0, curY=0, dragging=false;
+  sheet.addEventListener('touchstart',function(e){startY=e.touches[0].clientY;curY=startY;dragging=true;},{passive:true});
+  sheet.addEventListener('touchmove',function(e){
+    if(!dragging)return;
+    curY=e.touches[0].clientY;
+    var dy=curY-startY;
+    if(dy>0) sheet.style.transform='translateX(-50%) translateY('+dy+'px)';
+  },{passive:true});
+  sheet.addEventListener('touchend',function(){
+    dragging=false;
+    if(curY-startY>90){closeFn();}
+    else{sheet.style.transform='';}
+  },{passive:true});
+}
 function openSheet(slot,date){
   const meal=getPickForDate(date,slot);
   S.sheetSlot=slot;S.sheetDate=date;
@@ -564,8 +584,9 @@ function openSheet(slot,date){
   `;
   document.getElementById('sheetBg').classList.add('open');
   document.getElementById('sheet').classList.add('open');
+  addPullDown('sheet',closeSheet);
 }
-function closeSheet(){document.getElementById('sheetBg').classList.remove('open');document.getElementById('sheet').classList.remove('open');}
+function closeSheet(){document.getElementById('sheetBg').classList.remove('open');document.getElementById('sheet').style.transform='';document.getElementById('sheet').classList.remove('open');}
 function sheetSwap(){const date=S.sheetDate,slot=S.sheetSlot;const pool=getPool(slot);const cur=getPickForDate(date,slot);const others=pool.filter(m=>!cur||m.id!==cur.id);const src=others.length?others:pool;setPickForDate(date,slot,src[Math.floor(Math.random()*src.length)]);closeSheet();toast('✦ New suggestion!');render();}
 function sheetStar(){const meal=getPickForDate(S.sheetDate,S.sheetSlot);if(!meal)return;S.starredItems[meal.id]=!S.starredItems[meal.id];saveState();toast(S.starredItems[meal.id]?'⭐ Added to favourites':'Removed from favourites');closeSheet();render();}
 function sheetWA(){const meal=getPickForDate(S.sheetDate,S.sheetSlot);if(!meal)return;const ed=S.mealEdits[meal.id]||{};const cook=S.cookName?`\n\nPlease cook this for us, ${S.cookName}! 🙏`:'';const url=ed.url?`\n\n🎥 ${ed.url}`:'';const msg=encodeURIComponent(`*🍽 ${meal.name}* (${meal.cuisine})\n\n📜 ${ed.recipe||meal.recipe}${url}${cook}\n\n_Sent from Meal Planner_`);const base=S.cookPhone?`https://wa.me/${S.cookPhone.replace(/\D/g,'')}`:'https://wa.me/';window.open(base+'?text='+msg,'_blank');closeSheet();}
@@ -586,8 +607,9 @@ function openEdit(id){
     <div style="height:24px"></div>`;
   document.getElementById('editBg').classList.add('open');
   document.getElementById('editSheet').classList.add('open');
+  addPullDown('editSheet',closeEdit);
 }
-function closeEdit(){document.getElementById('editBg').classList.remove('open');document.getElementById('editSheet').classList.remove('open');}
+function closeEdit(){document.getElementById('editBg').classList.remove('open');document.getElementById('editSheet').style.transform='';document.getElementById('editSheet').classList.remove('open');}
 function saveEdit(id){
   const recipe=document.getElementById('ei-recipe').value.trim();
   const url=document.getElementById('ei-url').value.trim();
@@ -601,8 +623,9 @@ function saveEdit(id){
   saveState();closeEdit();toast('Saved ✓');render();
 }
 
-function openManual(){closeSheet();document.getElementById('manualSearch').value='';document.getElementById('manualBg').classList.add('open');document.getElementById('manualSheet').classList.add('open');setTimeout(()=>document.getElementById('manualSearch').focus(),350);renderManualResults();}
-function closeManual(){document.getElementById('manualBg').classList.remove('open');document.getElementById('manualSheet').classList.remove('open');}
+function openManual(){closeSheet();document.getElementById('manualSearch').value='';document.getElementById('manualBg').classList.add('open');document.getElementById('manualSheet').classList.add('open');
+  addPullDown('manualSheet',closeManual);setTimeout(()=>document.getElementById('manualSearch').focus(),350);renderManualResults();}
+function closeManual(){document.getElementById('manualBg').classList.remove('open');document.getElementById('manualSheet').style.transform='';document.getElementById('manualSheet').classList.remove('open');}
 function renderManualResults(){const q=(document.getElementById('manualSearch').value||'').toLowerCase();const pool=meals.filter(m=>!q||m.name.toLowerCase().includes(q)).slice(0,14);document.getElementById('manualResults').innerHTML=pool.map(m=>`<div class="manual-result" onclick="pickManual(${m.id})"><div class="mr-icon">${m.icon}</div><div class="mr-info"><div class="mr-name">${m.name}</div><div class="mr-sub">${m.cuisine} · ${mealLabels[m.type]}</div></div></div>`).join('')||`<div style="color:var(--muted);font-size:13px;padding:10px 0">No dishes found</div>`;}
 function pickManual(id){const m=meals.find(x=>x.id===id);if(!m)return;setPickForDate(S.sheetDate,S.sheetSlot,m);closeManual();toast('✓ Set to '+m.name);render();}
 
@@ -799,142 +822,81 @@ function addNewItem(){
 function removeMeal(id){if(!confirm('Remove this item?'))return;meals=meals.filter(m=>m.id!==id);delete S.likedItems[id];if(!S.removedIds)S.removedIds=[];S.removedIds.push(id);Object.keys(S.picks).forEach(k=>{if(S.picks[k]&&(S.picks[k].id===id||S.picks[k]===id))delete S.picks[k];});saveState();toast('Removed');render();}
 
 function renderSettings(){
-  
-  return`<div class="about-card"><div class="about-name">Meal Planner</div><div class="about-ver">Version 2.0 · ${meals.length} recipes</div></div>
-  <div class="sec-lbl">Family &amp; Sync</div>
-  <div class="s-grp">
-    <div class="s-row" onclick="showHouseholdPanel()">
-      <div class="s-ico" style="background:#CCFBF1">👨‍👩‍👧</div>
-      <div class="s-lbl">
-        <div class="s-title">${S.householdCode?'Household: '+S.householdCode:'Set up family sharing'}</div>
-        <div class="s-sub">${S.householdCode?S.householdMembers.length+' member(s) · Tap to manage':'Create or join a household with a 6-letter code'}</div>
-      </div>
-      <span class="s-chev">›</span>
-    </div>
-    <div class="s-row" onclick="showWhySignIn()">
-      <div class="s-ico" style="background:#DBEAFE">ℹ️</div>
-      <div class="s-lbl"><div class="s-title">How does family sharing work?</div></div>
-      <span class="s-chev">›</span>
-    </div>
-  </div>
-  <div class="sec-lbl">Preferences</div>
-  <div class="s-grp"><div class="s-row notap"><div class="s-ico" style="background:#FEF3C7">🥚</div><div class="s-lbl"><div class="s-title">Include egg recipes</div><div class="s-sub">Show dishes with eggs in suggestions</div></div><div class="sw${S.eggsOn?' on':''}" onclick="S.eggsOn=!S.eggsOn;saveState();render()"></div></div></div>
-  <div class="sec-lbl">Cook details</div>
-  <div class="s-grp">
-    <div class="s-row notap"><div class="s-ico" style="background:#EDE9FE">👨‍🍳</div><div class="s-lbl"><div class="s-title">Cook's name</div><div class="s-sub">Used in WhatsApp messages</div></div><input class="s-inp" placeholder="e.g. Ramesh bhai" value="${S.cookName}" oninput="S.cookName=this.value" onblur="saveState()"/></div>
-    <div class="s-row notap"><div class="s-ico" style="background:#D1FAE5">📱</div><div class="s-lbl"><div class="s-title">Cook's WhatsApp</div><div class="s-sub">Number with country code</div></div><input class="s-inp" placeholder="+91 98765 43210" value="${S.cookPhone}" oninput="S.cookPhone=this.value" onblur="saveState()" type="tel"/></div>
-  </div>
-  <div class="sec-lbl">App</div>
-  <div class="s-grp">
-    <div class="s-row" onclick="showInstallHelp()"><div class="s-ico" style="background:#CCFBF1">📲</div><div class="s-lbl"><div class="s-title">Add to Home Screen</div><div class="s-sub">Install as iPhone app</div></div><span class="s-chev">›</span></div>
-    <div class="s-row" onclick="if(navigator.share)navigator.share({title:'Meal Planner',url:location.href});else toast('Copy the URL to share!')"><div class="s-ico" style="background:#DBEAFE">🔗</div><div class="s-lbl"><div class="s-title">Share app</div></div><span class="s-chev">›</span></div>
-  </div>
-  <div class="sec-lbl">Family sharing</div>
-  <div class="s-grp">
-    <div class="s-row" onclick="showFamilyInfo()">
-      <div class="s-ico" style="background:#CCFBF1">👨‍👩‍👧</div>
-      <div class="s-lbl">
-        <div class="s-title">Share with family</div>
-        <div class="s-sub">Sync menu across all family devices</div>
-      </div>
-      <span class="s-chev">›</span>
-    </div>
-  </div>
-  <div class="sec-lbl">About</div>
-  <div class="s-grp">
-    <div class="s-row notap"><div class="s-ico" style="background:#CCFBF1">🗂</div><div class="s-lbl"><div class="s-title">Recipes</div></div><div class="s-right">${meals.length} items</div></div>
-    <div class="s-row notap"><div class="s-ico" style="background:#FEF3C7">🌿</div><div class="s-lbl"><div class="s-title">Diet mode</div></div><div class="s-right" style="color:var(--p);font-weight:500">Pure Vegetarian</div></div>
-    <div class="s-row" onclick="switchTab('today',document.querySelector('.tab'))"><div class="s-ico" style="background:#FEE2E2">🏠</div><div class="s-lbl"><div class="s-title">Back to planner</div></div><span class="s-chev">›</span></div>
-  </div>`;
-}
-function showInstallHelp(){alert('To install on iPhone:\n\n1. Open this page in Safari\n2. Tap the Share button (↑)\n3. Tap "Add to Home Screen"\n4. Tap Add');}
-function updateModeTag(){
-  var tag=document.getElementById('modeTag');if(!tag)return;
-  if(S.householdCode){tag.textContent='Family';tag.style.background='rgba(255,255,255,0.25)';}
-  else if(S.userId){tag.textContent=(S.userName||'Me').split(' ')[0];tag.style.background='rgba(255,255,255,0.18)';}
-  else{tag.textContent='Solo';tag.style.background='rgba(255,255,255,0.15)';}
-}
-function copyCode(){if(!S.householdCode)return;if(navigator.clipboard)navigator.clipboard.writeText(S.householdCode).then(()=>toast("Code copied: "+S.householdCode)).catch(()=>toast("Code: "+S.householdCode));else toast("Your code: "+S.householdCode);}
+  var bk='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>';
+  var googleIcon='<svg width="18" height="18" viewBox="0 0 24 24"><path fill="#EA4335" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#4285F4" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#34A853" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>';
 
-function showWhySignIn(){alert('Why sign in?\n\nRight now meals are saved only on this device. To share the same menu with your family across multiple phones, the data needs to live in the cloud.\n\nGoogle Sign-In is the simplest way - no new password needed. Only people with your household code can join.\n\nYou can use the app without signing in - everything works in Solo mode.');}
-async function showHouseholdPanel(){
-  // If Firebase configured and user signed in, use real Firebase household
-  if(window.FB && window.FB.configured && S.userId){
-    if(S.householdCode){
-      var action=confirm('Your household code is: '+S.householdCode+'\n\nMembers: '+S.householdMembers.map(m=>m.name).join(', ')+'\n\nPress OK to copy code, Cancel to leave household.');
-      if(action){copyCode();}
-      else if(confirm('Are you sure you want to leave this household?')){
-        S.householdCode=null;S.householdMembers=[];
-        if(_unsubFS){_unsubFS();_unsubFS=null;}
-        await window.FB.saveUser(S.userId,{householdCode:null});
-        saveState();updateModeTag();toast('Left household');render();
-      }
-    } else {
-      var code=prompt('Enter a household code to join, or leave blank to create a new one:','');
-      if(code===null)return;
-      code=code.trim().toUpperCase();
-      if(!code){
-        // Create new household
-        var newCode=Math.random().toString(36).substring(2,5).toUpperCase()+Math.random().toString(36).substring(2,5).toUpperCase();
-        var member={uid:S.userId,name:S.userName,email:S.userEmail};
-        await window.FB.createHousehold(newCode,member);
-        await window.FB.saveUser(S.userId,{householdCode:newCode});
-        S.householdCode=newCode;S.householdMembers=[member];
-        subscribeFirestore();saveState();updateModeTag();
-        alert('Household created!\n\nYour code: '+newCode+'\n\nShare this with your family. They tap Settings → Family & Sync → enter this code.');
-        render();
-      } else {
-        var result=await window.FB.addMemberToHousehold(code,{uid:S.userId,name:S.userName,email:S.userEmail});
-        if(result.error){toast(result.error);return;}
-        await window.FB.saveUser(S.userId,{householdCode:code});
-        S.householdCode=code;S.householdMembers=result.members||[];
-        subscribeFirestore();saveState();updateModeTag();toast('Joined household: '+code+'!');render();
-      }
-    }
-    return;
-  }
-  // Fallback: local-only household (no Firebase)
-  function _localPanel(){
-  var msg=S.householdCode?'Your household code: '+S.householdCode+'\n\nShare this with family. Enter a new code to join a different household, or leave blank to cancel:':'Enter a code to join an existing household, or leave blank to create a new one:';
-  var code=prompt(msg,'');
-  if(code===null)return;
-  code=code.trim().toUpperCase();
-  if(!code&&!S.householdCode){
-    var newCode=Math.random().toString(36).substring(2,5).toUpperCase()+Math.random().toString(36).substring(2,5).toUpperCase();
-    S.householdCode=newCode;
-    S.householdMembers=[{uid:S.userId||'local',name:S.userName||'Me',email:S.userEmail||''}];
-    saveState();updateModeTag();toast('Household created: '+newCode);
-    alert('Your household code is: '+newCode+'\n\nShare this code with your family. They can enter it in Settings to join your household.');
-    render();
-  } else if(code.length>=4){
-    S.householdCode=code;
-    if(!S.householdMembers.some(function(m){return m.uid===(S.userId||'local');}))
-      S.householdMembers.push({uid:S.userId||'local',name:S.userName||'Me',email:S.userEmail||''});
-    saveState();updateModeTag();toast('Joined household: '+code);render();
-  }
+  var h = '';
 
+  // ── Back arrow at top ──
+  h += '<div class="back-nav" onclick="switchTab(\'today\',document.querySelector(\'.tab\'))">'+bk+' Back</div>';
+
+  // ── About card ──
+  h += '<div class="about-card"><div class="about-name">Meal Planner</div><div class="about-ver">Version 2.1 &middot; '+meals.length+' recipes</div></div>';
+
+  // ── Account & Family ──
+  h += '<div class="sec-lbl">Account &amp; Family</div><div class="s-grp">';
+  if(!S.userId){
+    h += '<div class="s-row" onclick="googleSignIn()">'
+      + '<div class="s-ico" style="background:#FEE2E2">'+googleIcon+'</div>'
+      + '<div class="s-lbl"><div class="s-title">Sign in with Google</div><div class="s-sub">Required to sync menu with family</div></div>'
+      + '<span class="s-chev">›</span></div>';
+    h += '<div class="s-row" onclick="showWhySignIn()">'
+      + '<div class="s-ico" style="background:#CCFBF1">ℹ️</div>'
+      + '<div class="s-lbl"><div class="s-title">Why do I need to sign in?</div></div>'
+      + '<span class="s-chev">›</span></div>';
+  } else {
+    h += '<div class="s-row notap">'
+      + '<div class="s-ico" style="background:#D1FAE5">✓</div>'
+      + '<div class="s-lbl"><div class="s-title">'+S.userName+'</div><div class="s-sub">'+S.userEmail+'</div></div></div>';
+    h += '<div class="s-row" onclick="showHouseholdPanel()">'
+      + '<div class="s-ico" style="background:#CCFBF1">👨‍👩‍👧</div>'
+      + '<div class="s-lbl"><div class="s-title">'+(S.householdCode?'Household: '+S.householdCode:'Set up family sharing')+'</div>'
+      + '<div class="s-sub">'+(S.householdCode?S.householdMembers.length+' member(s) · Tap to manage':'Create or join a household')+'</div></div>'
+      + '<span class="s-chev">›</span></div>';
+    h += '<div class="s-row" onclick="signOutUser()">'
+      + '<div class="s-ico" style="background:#FEE2E2">↩️</div>'
+      + '<div class="s-lbl"><div class="s-title">Sign out</div></div>'
+      + '<span class="s-chev">›</span></div>';
   }
-  _localPanel();
+  h += '</div>';
+
+  // ── Preferences ──
+  h += '<div class="sec-lbl">Preferences</div><div class="s-grp">'
+    + '<div class="s-row notap"><div class="s-ico" style="background:#FEF3C7">🥚</div>'
+    + '<div class="s-lbl"><div class="s-title">Include egg recipes</div><div class="s-sub">Show dishes with eggs in suggestions</div></div>'
+    + '<div class="sw'+(S.eggsOn?' on':'')+'" onclick="S.eggsOn=!S.eggsOn;saveState();render()"></div></div>'
+    + '</div>';
+
+  // ── Cook details ──
+  h += '<div class="sec-lbl">Cook details</div><div class="s-grp">'
+    + '<div class="s-row notap"><div class="s-ico" style="background:#EDE9FE">👨‍🍳</div>'
+    + '<div class="s-lbl"><div class="s-title">Cook\'s name</div><div class="s-sub">Used in WhatsApp messages</div></div>'
+    + '<input class="s-inp" placeholder="e.g. Ramesh bhai" value="'+S.cookName+'" oninput="S.cookName=this.value" onblur="saveState()"/></div>'
+    + '<div class="s-row notap"><div class="s-ico" style="background:#D1FAE5">📱</div>'
+    + '<div class="s-lbl"><div class="s-title">Cook\'s WhatsApp</div><div class="s-sub">Number with country code</div></div>'
+    + '<input class="s-inp" placeholder="+91 98765 43210" value="'+S.cookPhone+'" oninput="S.cookPhone=this.value" onblur="saveState()" type="tel"/></div>'
+    + '</div>';
+
+  // ── App ──
+  h += '<div class="sec-lbl">App</div><div class="s-grp">'
+    + '<div class="s-row" onclick="showInstallHelp()"><div class="s-ico" style="background:#CCFBF1">📲</div>'
+    + '<div class="s-lbl"><div class="s-title">Add to Home Screen</div><div class="s-sub">Install as iPhone app — open in Safari first</div></div>'
+    + '<span class="s-chev">›</span></div>'
+    + '<div class="s-row" onclick="if(navigator.share)navigator.share({title:\'Meal Planner\',url:location.href});else toast(\'Copy the URL to share!\')">'
+    + '<div class="s-ico" style="background:#DBEAFE">🔗</div>'
+    + '<div class="s-lbl"><div class="s-title">Share app</div></div>'
+    + '<span class="s-chev">›</span></div>'
+    + '</div>';
+
+  // ── About ──
+  h += '<div class="sec-lbl">About</div><div class="s-grp">'
+    + '<div class="s-row notap"><div class="s-ico" style="background:#CCFBF1">🗂</div><div class="s-lbl"><div class="s-title">Recipes in database</div></div><div class="s-right">'+meals.length+' items</div></div>'
+    + '<div class="s-row notap"><div class="s-ico" style="background:#FEF3C7">🌿</div><div class="s-lbl"><div class="s-title">Diet mode</div></div><div class="s-right" style="color:var(--p);font-weight:500">Pure Vegetarian</div></div>'
+    + '</div>';
+
+  return h;
 }
-function signOutUser(){if(!confirm('Sign out?'))return;S.userId=null;S.userEmail='';S.userName='';saveState();updateModeTag();render();toast('Signed out');}
-function setWeekTemplate(pk,mealId,isSet){
-  if(isSet){delete S.weekPlan[pk];}
-  else if(mealId){S.weekPlan[pk]=mealId;}
-  saveState();
-  toast(isSet?'Removed from weekly template':'Set in weekly template');
-  render();
-}
-function showFamilyInfo(){
-  alert('Family Sharing — How it works\n\n' +
-    'Right now the app runs solo on your device. To share the same menu with your spouse or family:\n\n' +
-    '1. Sign in with Google (coming soon)\n' +
-    '2. One person creates a Household and gets a short code (e.g. KP-4721)\n' +
-    '3. Your spouse enters that code on their phone\n' +
-    '4. Both phones now see the same menu, picks, favourites and weekly plan in real time\n\n' +
-    'Why sign in? Because your meal data needs to live in the cloud to sync across devices. ' +
-    'Google Sign-In keeps it secure and private — only people with your household code can join.\n\n' +
-    'This feature is coming in the next update. For now, your data is saved privately on this device.');
-}
+
 function render(){const a=document.getElementById('contentArea');if(S.currentTab==='today')a.innerHTML=renderToday();else if(S.currentTab==='week')a.innerHTML=renderWeek();else if(S.currentTab==='database')a.innerHTML=renderDatabase();else a.innerHTML=renderSettings();}
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
@@ -955,9 +917,12 @@ window.addEventListener('resize',fixTabsTop);
 <div class="sheet-bg" id="infoBg" onclick="closeInfoSheet()"></div>
 <div class="sheet" id="infoSheet">
   <div class="sheet-handle"></div>
-  <div style="padding:16px 20px 0">
-    <div style="font-size:17px;font-weight:700;margin-bottom:3px">What can this app do?</div>
-    <div style="font-size:13px;color:var(--muted);margin-bottom:16px">Discover what's available — most things are just a tap away</div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px 8px">
+    <div style="flex:1">
+      <div style="font-size:17px;font-weight:700;margin-bottom:3px">What can this app do?</div>
+      <div style="font-size:12px;color:var(--muted)">Most things are just a tap away</div>
+    </div>
+    <button onclick="closeInfoSheet()" style="width:30px;height:30px;border-radius:50%;border:1px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;color:var(--muted);flex-shrink:0;margin-left:12px">×</button>
   </div>
   <div id="infoBody" style="padding:0 20px;overflow-y:auto;max-height:72vh;padding-bottom:24px"></div>
 </div>
