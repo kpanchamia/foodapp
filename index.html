@@ -57,7 +57,6 @@ body{background:var(--bg);color:var(--text);max-width:430px;margin:0 auto;displa
 .btn-p{background:var(--p);color:#fff}
 .btn-o{background:#fff;color:var(--p);border:1px solid var(--p)}
 .badge-fav{background:#FEF3C7;color:#92400E;font-size:10px;padding:1px 6px;border-radius:8px;margin-left:4px}
-.badge-egg{background:#FEF9C3;color:#854D0E;font-size:10px;padding:1px 6px;border-radius:8px;margin-left:4px}
 .la-bar{background:var(--pl);border-radius:14px;padding:12px 14px;margin-bottom:12px;border:1px solid rgba(13,148,136,.2);cursor:pointer}
 .la-bar:active{opacity:.9}
 .la-title{font-size:11px;font-weight:700;color:var(--pd);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
@@ -354,6 +353,7 @@ window.FB = {
 if (configured && auth) {
   onAuthStateChanged(auth, user => {
     if (window.onFBAuthChange) window.onFBAuthChange(user);
+    else window._pendingFBAuthUser = user;
   });
 }
 </script>
@@ -367,7 +367,7 @@ function saveState(){
     var picksIds={};
     Object.keys(S.picks).forEach(k=>{var p=S.picks[k];if(p)picksIds[k]=p.id||p;});
     localStorage.setItem('mp3_state',JSON.stringify({
-      eggsOn:S.eggsOn,cookName:S.cookName,cookPhone:S.cookPhone,
+      cookName:S.cookName,cookPhone:S.cookPhone,
       starredItems:S.starredItems,likedItems:S.likedItems,
       picks:picksIds,weekPlan:S.weekPlan,
       customMeals:meals.filter(m=>m.isCustom),
@@ -377,11 +377,10 @@ function saveState(){
   if(typeof syncToFirestore!=='undefined')syncToFirestore();
 }
 const saved=loadSaved();
-const S={eggsOn:saved.eggsOn||false,cookName:saved.cookName||'',cookPhone:saved.cookPhone||'',currentTab:'today',dayView:false,dayOffset:0,weekOffset:0,selectedDay:null,expandedCards:{},expandedSlots:{breakfast:true,lunch:true,snacks:true,dinner:true},starredItems:saved.starredItems||{},likedItems:saved.likedItems||{},showAddForm:false,picks:saved.picks||{},weekPlan:saved.weekPlan||{},removedIds:saved.removedIds||[],mealEdits:saved.mealEdits||{},sheetSlot:null,sheetDate:null,userId:saved.userId||null,userEmail:saved.userEmail||'',userName:saved.userName||'',householdCode:saved.householdCode||null,householdMembers:saved.householdMembers||[],editMealId:null};
-const photos={'Poha':'https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=120&q=70','Methi Thepla':'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=120&q=70','Masala Dosa':'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=120&q=70','Idli Sambar':'https://images.unsplash.com/photo-1589301761896-53adc6b30062?w=120&q=70','Upma':'https://images.unsplash.com/photo-1626200419199-391ae4be7a41?w=120&q=70','Aloo Paratha':'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=120&q=70','Yogurt Parfait':'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=120&q=70','PB Smoothie':'https://images.unsplash.com/photo-1553530979-fbb9e4aee36f?w=120&q=70','Egg Bhurji Toast':'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=120&q=70','Masala Omelette':'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=120&q=70','Protein Pancakes':'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=120&q=70','Besan Cheela':'https://images.unsplash.com/photo-1567337710282-00832b415979?w=120&q=70','Dal Dhokli':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Rajma Chawal':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Veg Biryani':'https://images.unsplash.com/photo-1563379091339-03246963d95a?w=120&q=70','Chole Bhature':'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=120&q=70','Pav Bhaji':'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=120&q=70','Paneer Frankie':'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=120&q=70','Spinach-Corn Pasta':'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=120&q=70','Samosa & Chai':'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=120&q=70','Dhokla':'https://images.unsplash.com/photo-1567337710282-00832b415979?w=120&q=70','Manchurian':'https://images.unsplash.com/photo-1563379091339-03246963d95a?w=120&q=70','Moong Sprout Chaat':'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=120&q=70','Greek Yogurt with Nuts & Honey':'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=120&q=70','Fruit & Nut Yogurt Bowl':'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=120&q=70','Hummus & Veggie Wrap':'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=120&q=70','Dal Makhani':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Palak Paneer':'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=120&q=70','Paneer Vegetable Kofta Curry':'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=120&q=70','Aloo Gobi':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Aloo Matar':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Cauliflower Masala':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Mixed Vegetable Sabzi':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Tacos de Verdura':'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=120&q=70','Kadhi Chawal':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Mini Veg Burgers':'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=120&q=70','Veg Sandwich':'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=120&q=70','Paneer Paratha':'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=120&q=70','Chana Chaat':'https://images.unsplash.com/photo-1567337710282-00832b415979?w=120&q=70'};
+const S={cookName:saved.cookName||'',cookPhone:saved.cookPhone||'',currentTab:'today',dayView:false,dayOffset:0,weekOffset:0,selectedDay:null,expandedCards:{},expandedSlots:{breakfast:true,lunch:true,snacks:true,dinner:true},starredItems:saved.starredItems||{},likedItems:saved.likedItems||{},showAddForm:false,picks:saved.picks||{},weekPlan:saved.weekPlan||{},removedIds:saved.removedIds||[],mealEdits:saved.mealEdits||{},sheetSlot:null,sheetDate:null,userId:saved.userId||null,userEmail:saved.userEmail||'',userName:saved.userName||'',householdCode:saved.householdCode||null,householdMembers:saved.householdMembers||[],editMealId:null};
+const photos={'Poha':'https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=120&q=70','Methi Thepla':'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=120&q=70','Masala Dosa':'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=120&q=70','Idli Sambar':'https://images.unsplash.com/photo-1589301761896-53adc6b30062?w=120&q=70','Upma':'https://images.unsplash.com/photo-1626200419199-391ae4be7a41?w=120&q=70','Aloo Paratha':'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=120&q=70','Yogurt Parfait':'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=120&q=70','PB Smoothie':'https://images.unsplash.com/photo-1553530979-fbb9e4aee36f?w=120&q=70','Besan Cheela':'https://images.unsplash.com/photo-1567337710282-00832b415979?w=120&q=70','Dal Dhokli':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Rajma Chawal':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Veg Biryani':'https://images.unsplash.com/photo-1563379091339-03246963d95a?w=120&q=70','Chole Bhature':'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=120&q=70','Pav Bhaji':'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=120&q=70','Paneer Frankie':'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=120&q=70','Spinach-Corn Pasta':'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=120&q=70','Samosa & Chai':'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=120&q=70','Dhokla':'https://images.unsplash.com/photo-1567337710282-00832b415979?w=120&q=70','Manchurian':'https://images.unsplash.com/photo-1563379091339-03246963d95a?w=120&q=70','Moong Sprout Chaat':'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=120&q=70','Greek Yogurt with Nuts & Honey':'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=120&q=70','Fruit & Nut Yogurt Bowl':'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=120&q=70','Hummus & Veggie Wrap':'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=120&q=70','Dal Makhani':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Palak Paneer':'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=120&q=70','Paneer Vegetable Kofta Curry':'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=120&q=70','Aloo Gobi':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Aloo Matar':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Cauliflower Masala':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Mixed Vegetable Sabzi':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Tacos de Verdura':'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=120&q=70','Kadhi Chawal':'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=120&q=70','Mini Veg Burgers':'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=120&q=70','Veg Sandwich':'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=120&q=70','Paneer Paratha':'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=120&q=70','Chana Chaat':'https://images.unsplash.com/photo-1567337710282-00832b415979?w=120&q=70'};
 function gC(n,i){const t=(n+' '+i).toLowerCase();if(/dosa|idli|sambar|upma/.test(t))return'South Indian';if(/pav bhaji|bhel/.test(t))return'Maharashtrian';if(/dal dhokli|dhokla|thepla|kadhi/.test(t))return'Gujarati';if(/pasta|pizza/.test(t))return'Italian';if(/manchurian|lemon rice/.test(t))return'Indo-chinese';if(/taco/.test(t))return'Mexican';return'North Indian';}
 function gI(n){const t=n.toLowerCase();if(/smoothie/.test(t))return'🥤';if(/omelette|egg|bhurji/.test(t))return'🍳';if(/pancake|cheela|chilla|dosa/.test(t))return'🥞';if(/paratha|roti|bread|sandwich|wrap|frankie|burger/.test(t))return'🫓';if(/pasta/.test(t))return'🍝';if(/rice|biryani/.test(t))return'🍚';if(/chaat|sprout|salad/.test(t))return'🥗';if(/yogurt|parfait/.test(t))return'🍦';if(/dal|curry|sabzi|matar|gobi|masala|kofta|palak/.test(t))return'🫕';if(/samosa/.test(t))return'🔺';if(/paneer/.test(t))return'🧀';if(/corn/.test(t))return'🌽';if(/hummus/.test(t))return'🫙';return'🥘';}
-function hE(n,i){return/egg|omelette|bhurji|pancake/i.test(n+' '+i);}
 function gN(n,i){const t=(n+' '+i).toLowerCase();const r=[];if(/paneer|egg|protein|moong|chana|sprout|dal|yogurt|greek|nut|peanut|edamame/.test(t))r.push('protein');if(/rice|pasta|bread|roti|paratha|oat|wheat|dosa|idli|potato|aloo|bhaji/.test(t))r.push('carb');if(/spinach|palak|carrot|vegetable|veggie|tomato|bell pepper|cucumber|fruit|berry/.test(t))r.push('vitamin');if(/sprout|moong|chana|bean|lentil|dal|oat|flax|chia/.test(t))r.push('fiber');if(/yogurt|paneer|cheese|milk/.test(t))r.push('calcium');if(/chaat|salad|smoothie/.test(t))r.push('lowcal');return[...new Set(r)].slice(0,3);}
 function getMon(d){const dt=new Date(d);const dy=dt.getDay();const df=dy===0?-6:1-dy;dt.setDate(dt.getDate()+df);dt.setHours(0,0,0,0);return dt;}
 function addD(d,n){const r=new Date(d);r.setDate(r.getDate()+n);return r;}
@@ -396,9 +395,6 @@ const BI=[
   {name:'Upma',cuisine:'South Indian',type:'breakfast',icon:'🍚',recipe:'Semolina with vegetables & tempering.',ingredients:'Semolina, vegetables, mustard seeds, curry leaves',hasEgg:false,fav:false,timesCooked:5},
   {name:'Aloo Paratha',cuisine:'North Indian',type:'breakfast',icon:'🫓',recipe:'Whole wheat flatbread stuffed with spiced mashed potato. Serve with butter & curd.',ingredients:'Whole wheat flour, potato, spices, butter',hasEgg:false,fav:false,timesCooked:7},
   {name:'Idli Sambar',cuisine:'South Indian',type:'breakfast',icon:'🫙',recipe:'Steamed rice cakes with hot sambar & coconut chutney.',ingredients:'Rice, lentils, sambar vegetables, coconut',hasEgg:false,fav:false,timesCooked:4},
-  {name:'Egg Bhurji Toast',cuisine:'North Indian',type:'breakfast',icon:'🍳',recipe:'Scramble eggs with onions & tomatoes; serve on toast.',ingredients:'Eggs, onion, tomato, toast',hasEgg:true,fav:false,timesCooked:0},
-  {name:'Masala Omelette',cuisine:'North Indian',type:'breakfast',icon:'🍳',recipe:'Beat eggs with veggies; cook until set.',ingredients:'Eggs, onion, tomato, coriander, spinach',hasEgg:true,fav:false,timesCooked:0},
-  {name:'Protein Pancakes',cuisine:'North Indian',type:'breakfast',icon:'🥞',recipe:'Blend all; cook on pan until golden on both sides.',ingredients:'Oats, eggs, milk',hasEgg:true,fav:false,timesCooked:0},
   {name:'Besan Cheela',cuisine:'North Indian',type:'breakfast',icon:'🥞',recipe:'Make batter, add veggies, cook thin on tawa.',ingredients:'Chickpea flour, paneer, spinach, onion, carrot',hasEgg:false,fav:false,timesCooked:0},
   {name:'Stuffed Moong Chilla',cuisine:'North Indian',type:'breakfast',icon:'🥞',recipe:'Soak dal, blend into batter; fill with sauteed paneer & veggies.',ingredients:'Moong dal, paneer, onions, peppers, coriander',hasEgg:false,fav:false,timesCooked:0},
   {name:'Dal Dhokli',cuisine:'Gujarati',type:'lunch',icon:'🫕',recipe:'Wheat flour dumplings simmered in sweet-tangy tuvar dal.',ingredients:'Wheat flour, tuvar dal, tomato, spices',hasEgg:false,fav:true,timesCooked:4},
@@ -448,8 +444,99 @@ const freqL={daily:'Every day',weekly:'Weekly',fortnightly:'Fortnightly',monthly
 const swapSVG=`<svg viewBox="0 0 18 18" fill="none" width="16" height="16"><path d="M3 6h9.5M3 6l2.5-2.5M3 6l2.5 2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 12H5.5M15 12l-2.5-2.5M15 12l-2.5 2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+window.fbToast = msg => toast(msg);
+function openStatusSheet(title, lines){
+  document.getElementById('statusTitle').textContent = title;
+  document.getElementById('statusBody').innerHTML = lines.map(function(line){return '<div style="margin-bottom:14px;font-size:14px;color:var(--text);line-height:1.5">'+line+'</div>';}).join('');
+  document.getElementById('statusBg').classList.add('open');
+  document.getElementById('statusSheet').classList.add('open');
+  addPullDown('statusSheet',closeStatusSheet);
+}
+function closeStatusSheet(){
+  document.getElementById('statusBg').classList.remove('open');
+  document.getElementById('statusSheet').style.transform='';
+  document.getElementById('statusSheet').classList.remove('open');
+}
+window.onFBAuthChange = async function(user){
+  if(user){
+    S.userId = user.uid;
+    S.userEmail = user.email||'';
+    S.userName = user.displayName||S.userEmail||'Google user';
+    const savedUser = await window.FB.getUserData(user.uid);
+    if(savedUser){
+      if(savedUser.householdCode) S.householdCode = savedUser.householdCode;
+      if(savedUser.householdMembers) S.householdMembers = savedUser.householdMembers;
+    }
+  } else {
+    S.userId = null;
+    S.userEmail = '';
+    S.userName = '';
+    S.householdCode = null;
+    S.householdMembers = [];
+  }
+  saveState();
+  render();
+};
+if(window._pendingFBAuthUser!==undefined){window.onFBAuthChange(window._pendingFBAuthUser);window._pendingFBAuthUser=undefined;}
+async function googleSignIn(){
+  if(!window.FB?.configured){toast('Sign in is unavailable right now.');return;}
+  const user = await window.FB.signInWithGoogle();
+  if(!user) return;
+  S.userId = user.uid;
+  S.userEmail = user.email||'';
+  S.userName = user.displayName||S.userEmail||'Google user';
+  await window.FB.saveUser(user.uid,{email:S.userEmail,name:S.userName});
+  toast('Signed in as '+(S.userName||S.userEmail));
+  saveState();
+  render();
+  openStatusSheet('Signed in successfully', [
+    'Signed in as '+(S.userName||S.userEmail),
+    'Email: '+S.userEmail,
+    S.householdCode ? 'Household: '+S.householdCode : 'No household yet. Use Family Sharing to invite your family.'
+  ]);
+}
+function showWhySignIn(){
+  alert('Sign in saves your menu to the cloud, syncs your plan across devices, and lets you share a household code with family.');
+}
+async function signOutUser(){
+  if(!window.FB?.configured){toast('Sign out unavailable.');return;}
+  await window.FB.signOut();
+  S.userId = null; S.userEmail = ''; S.userName = ''; S.householdCode = null; S.householdMembers = [];
+  saveState();
+  toast('Signed out');
+  render();
+}
+async function showHouseholdPanel(){
+  if(!S.userId){toast('Sign in first to manage household sharing.');return;}
+  let current = 'Household code: '+(S.householdCode||'none')+'\nMembers: '+(S.householdMembers.length?S.householdMembers.map(m=>m.name||m.email).join(', '):'none');
+  let action = prompt(current + '\n\nEnter a 6-letter code to join an existing household, or leave blank to create a new one.');
+  if(action===null) return;
+  action = action.trim().toUpperCase();
+  if(!action){
+    const code = Math.random().toString(36).slice(2,8).toUpperCase();
+    await window.FB.createHousehold(code,{uid:S.userId,name:S.userName,email:S.userEmail});
+    S.householdCode = code;
+    S.householdMembers = [{uid:S.userId,name:S.userName,email:S.userEmail}];
+    await window.FB.saveUser(S.userId,{householdCode:code,householdMembers:S.householdMembers});
+    toast('Household created: '+code);
+  } else {
+    const result = await window.FB.addMemberToHousehold(action,{uid:S.userId,name:S.userName,email:S.userEmail});
+    if(result.error){toast(result.error);return;}
+    S.householdCode = action;
+    S.householdMembers = result.members;
+    await window.FB.saveUser(S.userId,{householdCode:action,householdMembers:S.householdMembers});
+    toast('Joined household '+action);
+  }
+  saveState();
+  render();
+  openStatusSheet('Household updated', [
+    'Signed in as '+(S.userName||S.userEmail),
+    'Household: '+S.householdCode,
+    'Members: '+(S.householdMembers.length?S.householdMembers.map(m=>m.name||m.email).join(', '):'None yet')
+  ]);
+}
 function getCurSlot(){const h=new Date().getHours();if(h>=6&&h<11)return'breakfast';if(h>=11&&h<15)return'lunch';if(h>=15&&h<19)return'snacks';return'dinner';}
-function getPool(slot){return meals.filter(m=>m.type===slot&&S.likedItems[m.id]!=='disliked'&&!(m.hasEgg&&!S.eggsOn));}
+function getPool(slot){return meals.filter(m=>m.type===slot&&S.likedItems[m.id]!=='disliked');}
 function getPK(d,slot){return dKey(d)+'_'+slot;}
 function getPickForDate(date,slot){
   const k=getPK(date,slot);
@@ -506,13 +593,12 @@ function renderInfoSheet(){
       rows: [
         { icon: '⭐', bg: '#FEF3C7', title: 'Star favourites', sub: 'Starred dishes get suggested more often — tap ★ on any card' },
         { icon: '👍', bg: '#D1FAE5', title: 'Like & dislike', sub: 'Go to My Menu → thumbs up keeps a dish, thumbs down removes it from suggestions' },
-        { icon: '🥚', bg: '#FEF9C3', title: 'Egg toggle', sub: 'Turn egg dishes on or off globally in Settings' },
       ]
     },
     {
       title: 'My Menu',
       rows: [
-        { icon: '📖', bg: '#EDE9FE', title: '41 vegetarian recipes', sub: 'Gujarati, South Indian, North Indian, Italian, Mexican and more' },
+        { icon: '📖', bg: '#EDE9FE', title: 'Vegetarian recipes', sub: 'Gujarati, South Indian, North Indian, Italian, Mexican and more' },
         { icon: '➕', bg: '#CCFBF1', title: 'Add your own', sub: 'Add any dish with recipe, ingredients and a YouTube or Instagram video link' },
         { icon: '✏️', bg: '#FEF3C7', title: 'Edit any dish', sub: 'Customise recipe, add a video, change which meal slots it appears in' },
         { icon: '🔍', bg: '#DBEAFE', title: 'Search', sub: 'Search across all dishes instantly from the My Menu tab' },
@@ -653,7 +739,7 @@ function mealCardHTML(meal,slot,date,opts={}){
       ${photoTag(meal)}
       <div class="meal-info">
         <div class="meal-cui" style="color:${cc}">${meal.cuisine}${ed.url?' 🎥':''}</div>
-        <div class="meal-name">${meal.name}${isStar?'<span class="badge-fav">⭐</span>':''}${meal.hasEgg?'<span class="badge-egg">🥚</span>':''}</div>
+        <div class="meal-name">${meal.name}${isStar?'<span class="badge-fav">⭐</span>':''}</div>
         <div class="nut-tags">${getNT(meal)}</div>
       </div>
       <div class="icon-acts">
@@ -790,7 +876,7 @@ function renderDatabase(){
     html+=`<div class="db-topbar"><input class="db-search" placeholder="🔍 Search dishes..." oninput="window._dbSearch=this.value;render()" value="${search}" id="dbSearch"/><button class="btn-add-sm" onclick="S.showAddForm=true;render()">+ Add</button></div>`;
   }
   mealSlots.forEach(slot=>{
-    const sm=meals.filter(m=>m.type===slot&&(!search||m.name.toLowerCase().includes(search.toLowerCase()))&&!(m.hasEgg&&!S.eggsOn));
+    const sm=meals.filter(m=>m.type===slot&&(!search||m.name.toLowerCase().includes(search.toLowerCase())));
     const open=S.expandedSlots[slot];
     html+=`<div class="slot-grp"><div class="slot-hdr" onclick="S.expandedSlots['${slot}']=!S.expandedSlots['${slot}'];render()"><span class="slot-emoji">${slotEmoji[slot]}</span><span class="slot-title">${mealLabels[slot]}</span><span class="slot-count">${sm.length}</span><span class="slot-chev${open?' open':''}">▶</span></div>
     <div class="slot-items${open?' open':''}">
@@ -798,7 +884,7 @@ function renderDatabase(){
       const lk=S.likedItems[m.id];const cc=cColors[m.cuisine]||'#888';const ed=S.mealEdits[m.id]||{};const url=photos[m.name];
       return`<div class="db-row">
         ${url?`<img class="db-photo" src="${url}" onerror="this.style.display='none';this.nextSibling.style.display='flex'" loading="lazy"/><div class="db-photo-fb" style="display:none">${m.icon}</div>`:`<div class="db-photo-fb">${m.icon}</div>`}
-        <div class="db-info"><div class="db-name">${m.name}${S.starredItems[m.id]?' ⭐':''}${m.hasEgg?'<span class="badge-egg" style="margin-left:4px">🥚</span>':''}${ed.url?' 🎥':''}</div>
+        <div class="db-info"><div class="db-name">${m.name}${S.starredItems[m.id]?' ⭐':''}${ed.url?' 🎥':''}</div>
         <div class="db-sub" style="color:${cc}">${m.cuisine} · ${ed.freq?freqL[ed.freq]:'Weekly'}</div></div>
         <div class="db-acts">
           <div class="like-btn${lk==='liked'?' liked':''}" onclick="S.likedItems[${m.id}]='liked';saveState();render()">👍</div>
@@ -815,7 +901,7 @@ function addNewItem(){
   const name=document.getElementById('newName').value.trim();const type=document.getElementById('newType').value;const cuisine=document.getElementById('newCuisine').value;const recipe=document.getElementById('newRecipe').value.trim();const ingredients=document.getElementById('newIngr').value.trim();const url=document.getElementById('newUrl').value.trim();
   if(!name){toast('Please enter a dish name');return;}
   const id=nextId++;
-  meals.push({id,name,type,cuisine,icon:gI(name),recipe,ingredients,hasEgg:hE(name,ingredients),liked:true,fav:false,timesCooked:0,isCustom:true});
+  meals.push({id,name,type,cuisine,icon:gI(name),recipe,ingredients,liked:true,fav:false,timesCooked:0,isCustom:true});
   S.likedItems[id]='liked';if(url)S.mealEdits[id]={url,slots:[type],freq:'weekly'};
   S.showAddForm=false;S.expandedSlots[type]=true;saveState();toast('✅ '+name+' added!');render();
 }
@@ -859,13 +945,6 @@ function renderSettings(){
       + '<span class="s-chev">›</span></div>';
   }
   h += '</div>';
-
-  // ── Preferences ──
-  h += '<div class="sec-lbl">Preferences</div><div class="s-grp">'
-    + '<div class="s-row notap"><div class="s-ico" style="background:#FEF3C7">🥚</div>'
-    + '<div class="s-lbl"><div class="s-title">Include egg recipes</div><div class="s-sub">Show dishes with eggs in suggestions</div></div>'
-    + '<div class="sw'+(S.eggsOn?' on':'')+'" onclick="S.eggsOn=!S.eggsOn;saveState();render()"></div></div>'
-    + '</div>';
 
   // ── Cook details ──
   h += '<div class="sec-lbl">Cook details</div><div class="s-grp">'
@@ -925,6 +1004,20 @@ window.addEventListener('resize',fixTabsTop);
     <button onclick="closeInfoSheet()" style="width:30px;height:30px;border-radius:50%;border:1px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;color:var(--muted);flex-shrink:0;margin-left:12px">×</button>
   </div>
   <div id="infoBody" style="padding:0 20px;overflow-y:auto;max-height:72vh;padding-bottom:24px"></div>
+</div>
+
+<!-- Status sheet -->
+<div class="sheet-bg" id="statusBg" onclick="closeStatusSheet()"></div>
+<div class="sheet" id="statusSheet">
+  <div class="sheet-handle"></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px 8px">
+    <div style="flex:1">
+      <div class="sheet-title" id="statusTitle" style="font-size:17px;font-weight:700;margin-bottom:3px">Status</div>
+      <div style="font-size:12px;color:var(--muted)">Sign-in and household status</div>
+    </div>
+    <button onclick="closeStatusSheet()" style="width:30px;height:30px;border-radius:50%;border:1px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;color:var(--muted);flex-shrink:0;margin-left:12px">×</button>
+  </div>
+  <div id="statusBody" style="padding:0 20px;overflow-y:auto;max-height:72vh;padding-bottom:24px"></div>
 </div>
 
 </body>
